@@ -19,7 +19,7 @@ ShaderGraph_Android_Vulkan_Standalone_il2cpp_Linear_trunk:
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: powershell %ANDROID_SDK_ROOT%\platform-tools\adb.exe devices
          retries: 2
@@ -57,7 +57,7 @@ Build_ShaderGraph_Android_Vulkan_Standalone_il2cpp_Linear_trunk:
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: curl -s https://artifactory.prd.it.unity3d.com/artifactory/unity-tools-local/utr-standalone/utr.bat --output utr.bat
          retries: 2
@@ -94,7 +94,7 @@ ShaderGraph_Android_Vulkan_Standalone_il2cpp_Linear_CUSTOM-REVISION:
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: powershell %ANDROID_SDK_ROOT%\platform-tools\adb.exe devices
          retries: 2
@@ -132,7 +132,7 @@ Build_ShaderGraph_Android_Vulkan_Standalone_il2cpp_Linear_CUSTOM-REVISION:
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: curl -s https://artifactory.prd.it.unity3d.com/artifactory/unity-tools-local/utr-standalone/utr.bat --output utr.bat
          retries: 2

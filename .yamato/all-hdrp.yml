@@ -13,7 +13,7 @@ PR_HDRP_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/hdrp-win-dx11.yml#HDRP_Win_DX11_Standalone_mono_Linear_trunk
          rerun: on_new_revision
@@ -47,7 +47,7 @@ Extra_HDRP_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/hdrp-win-dx11.yml#HDRP_Win_DX11_editmode_XR_mono_Linear_trunk
          rerun: on_new_revision
@@ -71,7 +71,7 @@ HDRP_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-hdrp.yml#PR_HDRP_trunk
          rerun: on_new_revision
@@ -83,7 +83,7 @@ Nightly_HDRP_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-hdrp_performancetests.yml#HDRP_PerformanceTests_trunk
          rerun: on_new_revision
@@ -97,7 +97,7 @@ PR_HDRP_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/hdrp-win-dx11.yml#HDRP_Win_DX11_Standalone_mono_Linear_CUSTOM-REVISION
          rerun: on_new_revision
@@ -131,7 +131,7 @@ Extra_HDRP_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/hdrp-win-dx11.yml#HDRP_Win_DX11_editmode_XR_mono_Linear_CUSTOM-REVISION
          rerun: on_new_revision
@@ -155,7 +155,7 @@ HDRP_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-hdrp.yml#PR_HDRP_CUSTOM-REVISION
          rerun: on_new_revision
@@ -167,7 +167,7 @@ Nightly_HDRP_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-hdrp_performancetests.yml#HDRP_PerformanceTests_CUSTOM-REVISION
          rerun: on_new_revision

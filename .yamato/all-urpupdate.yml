@@ -15,7 +15,7 @@ PR_URPUpdate_trunk:
         TEMPLATE_UPDATE_PROJECT_BRANCH: master
         TEMPLATE_UPDATE_PROJECT_REVISION: 8eac84d6206a902ebc4b731c4aef01ef3911392a
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/urpupdate-win-dx11.yml#URPUpdate_Win_DX11_editmode_mono_Linear_trunk
          rerun: on_new_revision
@@ -29,7 +29,7 @@ Extra_URPUpdate_trunk:
         TEMPLATE_UPDATE_PROJECT_BRANCH: master
         TEMPLATE_UPDATE_PROJECT_REVISION: 8eac84d6206a902ebc4b731c4aef01ef3911392a
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies: []
 URPUpdate_trunk:
     name: URPUpdate on trunk
@@ -39,7 +39,7 @@ URPUpdate_trunk:
         TEMPLATE_UPDATE_PROJECT_BRANCH: master
         TEMPLATE_UPDATE_PROJECT_REVISION: 8eac84d6206a902ebc4b731c4aef01ef3911392a
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-urpupdate.yml#PR_URPUpdate_trunk
          rerun: on_new_revision
@@ -53,7 +53,7 @@ PR_URPUpdate_CUSTOM-REVISION:
         TEMPLATE_UPDATE_PROJECT_BRANCH: master
         TEMPLATE_UPDATE_PROJECT_REVISION: 8eac84d6206a902ebc4b731c4aef01ef3911392a
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/urpupdate-win-dx11.yml#URPUpdate_Win_DX11_editmode_mono_Linear_CUSTOM-REVISION
          rerun: on_new_revision
@@ -67,7 +67,7 @@ Extra_URPUpdate_CUSTOM-REVISION:
         TEMPLATE_UPDATE_PROJECT_BRANCH: master
         TEMPLATE_UPDATE_PROJECT_REVISION: 8eac84d6206a902ebc4b731c4aef01ef3911392a
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies: []
 URPUpdate_CUSTOM-REVISION:
     name: URPUpdate on CUSTOM-REVISION
@@ -77,7 +77,7 @@ URPUpdate_CUSTOM-REVISION:
         TEMPLATE_UPDATE_PROJECT_BRANCH: master
         TEMPLATE_UPDATE_PROJECT_REVISION: 8eac84d6206a902ebc4b731c4aef01ef3911392a
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-urpupdate.yml#PR_URPUpdate_CUSTOM-REVISION
          rerun: on_new_revision

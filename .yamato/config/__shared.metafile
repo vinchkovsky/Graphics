@@ -16,6 +16,7 @@ editors: # applied for all yml files
     allow_triggers: True
     variables:
       CACHE_ARGS: '{{cache.flags}}'
+      UTR_VERSION: '1.6.0'
   - track: CUSTOM-REVISION
     name: CUSTOM-REVISION
     rerun_strategy: on_new_revision
@@ -25,6 +26,7 @@ editors: # applied for all yml files
     allow_triggers: False
     variables:
       CACHE_ARGS: '{{cache.flags}}'
+      UTR_VERSION: '1.6.0'
 build_configs:
   - name: il2cpp_apiNet2
     scripting_backend: IL2CPP
@@ -159,6 +161,7 @@ test_platforms:
       - [all]: '%CACHE_ARGS%'
       - [all]: --testfilter=%TEST_FILTER%
       - [all]: --suite=playmode
+      - [all]: --timeout=1200
       - [all]: --scripting-backend=<SCRIPTING_BACKEND>
       # - [all]: --reruncount=2
       - [all]: --extra-editor-arg="-colorspace=<COLORSPACE>"
@@ -204,6 +207,7 @@ test_platforms:
       - [all]: '%CACHE_ARGS%'
       - [all]: --testfilter=%TEST_FILTER%
       - [all]: --suite=editor
+      - [all]: --timeout=1200
       # - [all]: --reruncount=2
       - [all]: --scripting-backend=<SCRIPTING_BACKEND>
       - [all]: --platform=editmode

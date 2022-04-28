@@ -13,7 +13,7 @@ PR_ShaderGraph_BuiltIn_Foundation_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/shadergraph_builtin_foundation-win-dx11.yml#ShaderGraph_BuiltIn_Foundation_Win_DX11_playmode_mono_Linear_trunk
          rerun: on_new_revision
@@ -37,7 +37,7 @@ Extra_ShaderGraph_BuiltIn_Foundation_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies: []
 ShaderGraph_BuiltIn_Foundation_trunk:
     name: ShaderGraph_BuiltIn_Foundation on trunk
@@ -45,7 +45,7 @@ ShaderGraph_BuiltIn_Foundation_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-shadergraph_builtin_foundation.yml#PR_ShaderGraph_BuiltIn_Foundation_trunk
          rerun: on_new_revision
@@ -57,7 +57,7 @@ PR_ShaderGraph_BuiltIn_Foundation_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/shadergraph_builtin_foundation-win-dx11.yml#ShaderGraph_BuiltIn_Foundation_Win_DX11_playmode_mono_Linear_CUSTOM-REVISION
          rerun: on_new_revision
@@ -81,7 +81,7 @@ Extra_ShaderGraph_BuiltIn_Foundation_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies: []
 ShaderGraph_BuiltIn_Foundation_CUSTOM-REVISION:
     name: ShaderGraph_BuiltIn_Foundation on CUSTOM-REVISION
@@ -89,7 +89,7 @@ ShaderGraph_BuiltIn_Foundation_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-shadergraph_builtin_foundation.yml#PR_ShaderGraph_BuiltIn_Foundation_CUSTOM-REVISION
          rerun: on_new_revision

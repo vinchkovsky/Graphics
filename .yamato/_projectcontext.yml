@@ -351,6 +351,7 @@ all_package_ci_project_trunk:
       -  .yamato/_projectcontext.yml#test_all_project_OSX_trunk
     variables:
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
+        UTR_VERSION: 1.6.0
     commands:
       -  npm install upm-ci-utils@stable -g --registry https://artifactory.prd.cds.internal.unity3d.com/artifactory/api/npm/upm-npm
       -  upm-ci package izon -t
@@ -366,6 +367,7 @@ all_package_ci_project_CUSTOM-REVISION:
       -  .yamato/_projectcontext.yml#test_all_project_OSX_CUSTOM-REVISION
     variables:
         CUSTOM_REVISION: custom_revision_not_set
+        UTR_VERSION: 1.6.0
     commands:
       -  npm install upm-ci-utils@stable -g --registry https://artifactory.prd.cds.internal.unity3d.com/artifactory/api/npm/upm-npm
       -  upm-ci package izon -t

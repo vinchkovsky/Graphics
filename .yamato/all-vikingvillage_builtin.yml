@@ -13,7 +13,7 @@ VikingVillage_BuiltIn_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
         VV_BUILTIN_BRANCH: built-in
         VV_BUILTIN_REVISION: c61a43cd7ad4ef36f38a0219730d53e8f6e281de
     dependencies:
@@ -43,7 +43,7 @@ VikingVillage_BuiltIn_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
         VV_BUILTIN_BRANCH: built-in
         VV_BUILTIN_REVISION: c61a43cd7ad4ef36f38a0219730d53e8f6e281de
     dependencies:

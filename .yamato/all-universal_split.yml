@@ -13,7 +13,7 @@ PR_Universal_Split_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-urp_2d.yml#PR_URP_2D_trunk
          rerun: on_new_revision
@@ -31,7 +31,7 @@ Extra_Universal_Split_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-urp_2d.yml#Extra_URP_2D_trunk
          rerun: on_new_revision
@@ -49,7 +49,7 @@ PR_Universal_Split_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-urp_2d.yml#PR_URP_2D_CUSTOM-REVISION
          rerun: on_new_revision
@@ -67,7 +67,7 @@ Extra_Universal_Split_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-urp_2d.yml#Extra_URP_2D_CUSTOM-REVISION
          rerun: on_new_revision

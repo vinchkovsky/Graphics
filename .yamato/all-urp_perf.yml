@@ -13,7 +13,7 @@ URP_Perf_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-urp_performance_boatattack.yml#URP_Performance_BoatAttack_trunk
          rerun: on_new_revision
@@ -29,7 +29,7 @@ URP_Perf_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-urp_performance_boatattack.yml#URP_Performance_BoatAttack_CUSTOM-REVISION
          rerun: on_new_revision

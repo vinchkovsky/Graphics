@@ -13,7 +13,7 @@ PR_Lightmapping_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/lightmapping-win-dx11.yml#Lightmapping_Win_DX11_editmode_mono_Linear_trunk
          rerun: on_new_revision
@@ -31,7 +31,7 @@ Extra_Lightmapping_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/lightmapping-osx_apple_silicon-metal.yml#Lightmapping_OSX_Apple_Silicon_Metal_editmode_mono_Linear_trunk
          rerun: on_new_revision
@@ -43,7 +43,7 @@ Lightmapping_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-lightmapping.yml#PR_Lightmapping_trunk
          rerun: on_new_revision
@@ -55,7 +55,7 @@ PR_Lightmapping_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/lightmapping-win-dx11.yml#Lightmapping_Win_DX11_editmode_mono_Linear_CUSTOM-REVISION
          rerun: on_new_revision
@@ -73,7 +73,7 @@ Extra_Lightmapping_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/lightmapping-osx_apple_silicon-metal.yml#Lightmapping_OSX_Apple_Silicon_Metal_editmode_mono_Linear_CUSTOM-REVISION
          rerun: on_new_revision
@@ -85,7 +85,7 @@ Lightmapping_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-lightmapping.yml#PR_Lightmapping_CUSTOM-REVISION
          rerun: on_new_revision

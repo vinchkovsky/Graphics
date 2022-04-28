@@ -19,7 +19,7 @@ Lightmapping_Win_DX11_editmode_mono_Linear_trunk:
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: curl -s https://artifactory.prd.it.unity3d.com/artifactory/unity-tools-local/utr-standalone/utr.bat --output utr.bat
          retries: 2
@@ -32,7 +32,7 @@ Lightmapping_Win_DX11_editmode_mono_Linear_trunk:
                 set /p GIT_REVISIONDATE=<revdate.tmp
                 echo %GIT_REVISIONDATE%
                 del revdate.tmp
-                utr --artifacts_path=TestProjects/Lightmapping/test-results --editor-location=.Editor --extra-editor-arg="-colorspace=Linear" --extra-editor-arg="-force-d3d11" --extra-editor-arg="-playergraphicsapi=Direct3D11" --platform=editmode --scripting-backend=Mono2x --suite=editor --testfilter=%TEST_FILTER% --testproject=./TestProjects/Lightmapping
+                utr --artifacts_path=TestProjects/Lightmapping/test-results --editor-location=.Editor --extra-editor-arg="-colorspace=Linear" --extra-editor-arg="-force-d3d11" --extra-editor-arg="-playergraphicsapi=Direct3D11" --platform=editmode --scripting-backend=Mono2x --suite=editor --testfilter=%TEST_FILTER% --testproject=./TestProjects/Lightmapping --timeout=1200
     artifacts:
         logs:
             paths:
@@ -53,7 +53,7 @@ Lightmapping_Win_DX11_Standalone_mono_Linear_trunk:
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: curl -s https://artifactory.prd.it.unity3d.com/artifactory/unity-tools-local/utr-standalone/utr.bat --output utr.bat
          retries: 2
@@ -85,7 +85,7 @@ Build_Lightmapping_Win_DX11_Standalone_mono_Linear_trunk:
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: curl -s https://artifactory.prd.it.unity3d.com/artifactory/unity-tools-local/utr-standalone/utr.bat --output utr.bat
          retries: 2
@@ -122,7 +122,7 @@ Lightmapping_Win_DX11_editmode_mono_Linear_CUSTOM-REVISION:
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: curl -s https://artifactory.prd.it.unity3d.com/artifactory/unity-tools-local/utr-standalone/utr.bat --output utr.bat
          retries: 2
@@ -135,7 +135,7 @@ Lightmapping_Win_DX11_editmode_mono_Linear_CUSTOM-REVISION:
                 set /p GIT_REVISIONDATE=<revdate.tmp
                 echo %GIT_REVISIONDATE%
                 del revdate.tmp
-                utr --artifacts_path=TestProjects/Lightmapping/test-results --editor-location=.Editor --extra-editor-arg="-colorspace=Linear" --extra-editor-arg="-force-d3d11" --extra-editor-arg="-playergraphicsapi=Direct3D11" --platform=editmode --scripting-backend=Mono2x --suite=editor --testfilter=%TEST_FILTER% --testproject=./TestProjects/Lightmapping
+                utr --artifacts_path=TestProjects/Lightmapping/test-results --editor-location=.Editor --extra-editor-arg="-colorspace=Linear" --extra-editor-arg="-force-d3d11" --extra-editor-arg="-playergraphicsapi=Direct3D11" --platform=editmode --scripting-backend=Mono2x --suite=editor --testfilter=%TEST_FILTER% --testproject=./TestProjects/Lightmapping --timeout=1200
     artifacts:
         logs:
             paths:
@@ -156,7 +156,7 @@ Lightmapping_Win_DX11_Standalone_mono_Linear_CUSTOM-REVISION:
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: curl -s https://artifactory.prd.it.unity3d.com/artifactory/unity-tools-local/utr-standalone/utr.bat --output utr.bat
          retries: 2
@@ -188,7 +188,7 @@ Build_Lightmapping_Win_DX11_Standalone_mono_Linear_CUSTOM-REVISION:
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
         UPM_REGISTRY: https://artifactory-slo.bf.unity3d.com/artifactory/api/npm/upm-candidates
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     commands:
       -  command: curl -s https://artifactory.prd.it.unity3d.com/artifactory/unity-tools-local/utr-standalone/utr.bat --output utr.bat
          retries: 2

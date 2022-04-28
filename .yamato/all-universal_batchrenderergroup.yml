@@ -13,7 +13,7 @@ PR_Universal_BatchRendererGroup_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/universal_batchrenderergroup-win-dx11.yml#Universal_BatchRendererGroup_Win_DX11_playmode_mono_Linear_trunk
          rerun: on_new_revision
@@ -33,7 +33,7 @@ Extra_Universal_BatchRendererGroup_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies: []
 Universal_BatchRendererGroup_trunk:
     name: Universal_BatchRendererGroup on trunk
@@ -41,7 +41,7 @@ Universal_BatchRendererGroup_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-universal_batchrenderergroup.yml#PR_Universal_BatchRendererGroup_trunk
          rerun: on_new_revision
@@ -53,7 +53,7 @@ PR_Universal_BatchRendererGroup_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/universal_batchrenderergroup-win-dx11.yml#Universal_BatchRendererGroup_Win_DX11_playmode_mono_Linear_CUSTOM-REVISION
          rerun: on_new_revision
@@ -73,7 +73,7 @@ Extra_Universal_BatchRendererGroup_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies: []
 Universal_BatchRendererGroup_CUSTOM-REVISION:
     name: Universal_BatchRendererGroup on CUSTOM-REVISION
@@ -81,7 +81,7 @@ Universal_BatchRendererGroup_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-universal_batchrenderergroup.yml#PR_Universal_BatchRendererGroup_CUSTOM-REVISION
          rerun: on_new_revision

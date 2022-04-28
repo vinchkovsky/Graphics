@@ -13,7 +13,7 @@ PR_HDRP_BatchRendererGroup_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/hdrp_batchrenderergroup-win-dx11.yml#HDRP_BatchRendererGroup_Win_DX11_playmode_mono_Linear_trunk
          rerun: on_new_revision
@@ -37,7 +37,7 @@ Extra_HDRP_BatchRendererGroup_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies: []
 HDRP_BatchRendererGroup_trunk:
     name: HDRP_BatchRendererGroup on trunk
@@ -45,7 +45,7 @@ HDRP_BatchRendererGroup_trunk:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: '{{trunk.changeset.id}}'
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-hdrp_batchrenderergroup.yml#PR_HDRP_BatchRendererGroup_trunk
          rerun: on_new_revision
@@ -57,7 +57,7 @@ PR_HDRP_BatchRendererGroup_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/hdrp_batchrenderergroup-win-dx11.yml#HDRP_BatchRendererGroup_Win_DX11_playmode_mono_Linear_CUSTOM-REVISION
          rerun: on_new_revision
@@ -81,7 +81,7 @@ Extra_HDRP_BatchRendererGroup_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies: []
 HDRP_BatchRendererGroup_CUSTOM-REVISION:
     name: HDRP_BatchRendererGroup on CUSTOM-REVISION
@@ -89,7 +89,7 @@ HDRP_BatchRendererGroup_CUSTOM-REVISION:
         CACHE_ARGS: '{{cache.flags}}'
         CUSTOM_REVISION: custom_revision_not_set
         TEST_FILTER: .*
-        UTR_VERSION: "current"
+        UTR_VERSION: 1.6.0
     dependencies:
       -  path: .yamato/all-hdrp_batchrenderergroup.yml#PR_HDRP_BatchRendererGroup_CUSTOM-REVISION
          rerun: on_new_revision
