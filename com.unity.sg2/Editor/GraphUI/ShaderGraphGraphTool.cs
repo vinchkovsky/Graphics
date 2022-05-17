@@ -38,5 +38,10 @@ namespace UnityEditor.ShaderGraph.GraphUI
                     return null;
             }
         }
+
+        protected override void InitDispatcher()
+        {
+            Dispatcher = new ShaderGraphCommandDispatcher();
+        }
     }
 }

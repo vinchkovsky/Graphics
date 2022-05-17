@@ -11,8 +11,8 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests
 
             var testGraphView = new TestGraphView(this, GraphTool, GraphTool.Name);
             m_PreviewManager = new PreviewManager(testGraphView.GraphViewModel.GraphModelState);
-            m_GraphViewStateObserver = new GraphViewStateObserver(testGraphView.GraphViewModel.GraphModelState, m_PreviewManager);
-            GraphTool.ObserverManager.RegisterObserver(m_GraphViewStateObserver);
+            m_GraphModelStateObserver = new GraphModelStateObserver(testGraphView.GraphViewModel.GraphModelState, m_ShaderGraphStateComponent, m_PreviewManager);
+            GraphTool.ObserverManager.RegisterObserver(m_GraphModelStateObserver);
 
             // TODO (Brett) Command registration or state handler creation belongs here.
             // Example: graphView.RegisterCommandHandler<SetNumberOfInputPortCommand>(SetNumberOfInputPortCommand.DefaultCommandHandler);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.GraphToolsFoundation.Overdrive;
+using UnityEditor.GraphToolsFoundation.Overdrive.BasicModel;
 using UnityEditor.ShaderGraph.GraphDelta;
 using UnityEngine.GraphToolsFoundation.Overdrive;
 using UnityEngine;
@@ -116,10 +117,10 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         public void OnPreviewModeChanged(string nodeName, PreviewRenderMode newPreviewMode) { }
 
-        public void OnNodeFlowChanged(string nodeName)
+        public void OnNodeFlowChanged(string nodeName, bool wasNodeDeleted = false)
         {
             m_DirtyNodes.Add(nodeName);
-            var impactedNodes = m_PreviewHandlerInstance.NotifyNodeFlowChanged(nodeName);
+            var impactedNodes = m_PreviewHandlerInstance.NotifyNodeFlowChanged(nodeName, wasNodeDeleted);
             foreach (var downstreamNode in impactedNodes)
             {
                 m_DirtyNodes.Add(downstreamNode);
@@ -139,6 +140,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         public void OnNodeRemoved(String nodeName)
         {
+            OnNodeFlowChanged(nodeName, true);
             m_DirtyNodes.Remove(nodeName);
             m_NodeLookupTable.Remove(nodeName);
         }
@@ -155,6 +157,23 @@ namespace UnityEditor.ShaderGraph.GraphUI
             foreach (var downstreamNode in impactedNodes)
             {
                 m_DirtyNodes.Add(downstreamNode);
+            }
+        }
+
+        public void HandleUndoRedo(IGraphModel graphModel)
+        {
+            m_GraphModel = graphModel as ShaderGraphModel;
+            foreach (var nodeModel in graphModel.NodeModels)
+            {
+                if(nodeModel is not GraphDataNodeModel graphDataNodeModel)
+                    continue;
+
+                var nodeName = graphDataNodeModel.graphDataName;
+                // If a node exists on the graph after undo/redo that we don't know about, start tracking preview data for it
+                if (m_NodeLookupTable.ContainsKey(nodeName) == false)
+                {
+                    OnNodeAdded(nodeName, graphDataNodeModel.Guid);
+                }
             }
         }
     }

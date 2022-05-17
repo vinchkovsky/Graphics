@@ -251,24 +251,31 @@ namespace UnityEditor.ShaderGraph.GraphDelta
         /// </summary>
         /// <returns> List of names describing all nodes that were affected by this change </returns>
         /// <remarks> Dirties the preview compile & render state of all nodes downstream of the changed node </remarks>
-        public List<string> NotifyNodeFlowChanged(string nodeName)
+        public List<string> NotifyNodeFlowChanged(string nodeName, bool wasNodeDeleted = false)
         {
             var impactedNodes = new List<string>();
 
             if (m_CachedPreviewData.ContainsKey(nodeName))
             {
                 var sourceNode = m_GraphHandle.GetNode(nodeName);
-                if (sourceNode == null)
+                if (wasNodeDeleted)
                 {
                     // Node was deleted, get rid of the preview data associated with it
                     m_CachedPreviewData.Remove(nodeName);
 
-                    // TODO: How to get downstream nodes when the source node has been deleted? probably wont have the nodeReader hanging around after the nodes deleted right?
+                    foreach (var downStreamNode in GraphTraversalUtils.GetDownstreamNodes(sourceNode))
+                    {
+                        if (m_CachedPreviewData.TryGetValue(downStreamNode.ID.LocalPath, out var downStreamNodeData))
+                        {
+                            downStreamNodeData.isShaderOutOfDate = true;
+                        }
+
+                        impactedNodes.Add(downStreamNode.ID.LocalPath);
+                    }
                 }
                 else
                 {
                     // TODO: Will we handle node bypassing directly in GetDownstreamNodes()?
-
                     var previewData = m_CachedPreviewData[nodeName];
                     previewData.isShaderOutOfDate = true;
 

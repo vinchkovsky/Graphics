@@ -140,13 +140,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
                             graphUpdater.MarkChanged(redirect);
                             break;
                         }
-
-                        // Delete backing data for graph data nodes.
-                        case GraphDataNodeModel graphDataNode:
-                        {
-                            graphModel.GraphHandler.RemoveNode(graphDataNode.graphDataName);
-                            break;
-                        }
                     }
                 }
 
@@ -191,24 +184,23 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 {
                     switch (model)
                     {
-                        case EdgeModel edgeModel:
+                        case GraphDataEdgeModel edgeModel:
                             if (edgeModel.ToPort.NodeModel is GraphDataNodeModel graphDataNodeModel)
                                 previewManager.OnNodeFlowChanged(graphDataNodeModel.graphDataName);
+
+                            // After updating preview manager, remove the edge
+                            graphModel.GraphHandler.RemoveEdge(edgeModel.FromPortId, edgeModel.ToPortId);
                             break;
                         case GraphDataNodeModel deletedNode:
-                            previewManager.OnNodeFlowChanged(deletedNode.graphDataName);
                             previewManager.OnNodeRemoved(deletedNode.graphDataName);
+
+                            // After updating preview manager, remove the node
+                            graphModel.GraphHandler.RemoveNode(deletedNode.graphDataName);
                             break;
                     }
                 }
 
                 graphUpdater.MarkDeleted(deletedModels);
-
-                foreach (var nodeModel in command.Models)
-                {
-                    if (nodeModel is GraphDataNodeModel graphDataNodeModel)
-                        previewManager.OnNodeFlowChanged(graphDataNodeModel.graphDataName);
-                }
             }
         }
 
