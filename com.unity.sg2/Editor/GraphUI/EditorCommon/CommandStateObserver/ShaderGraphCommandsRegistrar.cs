@@ -6,7 +6,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
 {
     public static class ShaderGraphCommandsRegistrar
     {
-        public static void RegisterCommandHandlers(BaseGraphTool graphTool, GraphView graphView, GraphViewModel graphViewModel, PreviewManager previewManager, ShaderGraphModel shaderGraphModel, Dispatcher dispatcher)
+        public static void RegisterCommandHandlers(BaseGraphTool graphTool, GraphView graphView, GraphViewModel graphViewModel, ShaderGraphStateComponent shaderGraphStateComponent, PreviewManager previewManager, ShaderGraphModel shaderGraphModel, Dispatcher dispatcher)
         {
             if (dispatcher is not CommandDispatcher commandDispatcher)
                 return;
@@ -40,10 +40,11 @@ namespace UnityEditor.ShaderGraph.GraphUI
             // Unregister the default command handler for the undo-redo command
             commandDispatcher.UnregisterCommandHandler<UndoRedoCommand>();
             // Bind our command handler instead
-            commandDispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, PreviewManager, UndoRedoCommand>(
+            commandDispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, ShaderGraphStateComponent, PreviewManager, UndoRedoCommand>(
                 UndoRedoCommandHandler.HandleUndoRedo,
                 graphTool.UndoStateComponent,
                 graphViewModel.GraphModelState,
+                shaderGraphStateComponent,
                 previewManager);
 
             commandDispatcher.RegisterCommandHandler<UndoStateComponent, ShaderGraphAssetModel, ChangeActiveTargetsCommand>(

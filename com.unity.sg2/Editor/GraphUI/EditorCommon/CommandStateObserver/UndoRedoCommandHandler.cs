@@ -7,6 +7,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         public static void HandleUndoRedo(
             UndoStateComponent undoStateComponent,
             GraphModelStateComponent graphModelStateComponent,
+            ShaderGraphStateComponent shaderGraphStateComponent,
             PreviewManager previewManager,
             UndoRedoCommand command)
         {

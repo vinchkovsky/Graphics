@@ -14,7 +14,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         public GraphModelStateObserver(
             GraphModelStateComponent graphModelStateComponent,
             ShaderGraphStateComponent shaderGraphStateComponent,
-            PreviewManager previewManager) : base(new IStateComponent[] {graphModelStateComponent, shaderGraphStateComponent}, new IStateComponent[] {graphModelStateComponent, shaderGraphStateComponent})
+            PreviewManager previewManager) : base(new IStateComponent[] {graphModelStateComponent}, new IStateComponent[] {graphModelStateComponent, shaderGraphStateComponent})
         {
             m_PreviewManagerInstance = previewManager;
             m_GraphModelStateComponent = graphModelStateComponent;

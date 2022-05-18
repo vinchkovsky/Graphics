@@ -25,6 +25,9 @@ namespace UnityEditor.ShaderGraph.GraphUI
         {
             public void UpdateShaderGraphState()
             {
+                if(m_State.m_AssetModel == null)
+                    return;
+
                 m_State.m_GraphJSON = m_State.m_AssetModel.GraphHandler.ToSerializedFormat();
                 m_State.m_TargetSettingsJSON =  MultiJson.Serialize(m_State.m_AssetModel.targetSettingsObject);
             }
