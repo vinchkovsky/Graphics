@@ -1,0 +1,10 @@
+# Only the paths listed in the file will be downloaded when performing a
+# partial clone using `--filter=sparse:oid=com.unity.template-hd/.gitfilterspec`
+
+# Explicitly include filterspec needed to configure sparse checkout with
+# git config --local core.sparsecheckout true
+# git show master:com.unity.template-hd/.filterspec >> .git/info/sparse-checkout
+com.unity.template-hd/.filterspec
+
+com.unity.template-hd/
+
