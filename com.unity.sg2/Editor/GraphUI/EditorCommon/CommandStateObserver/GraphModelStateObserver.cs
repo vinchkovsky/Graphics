@@ -1,5 +1,4 @@
 using UnityEditor.GraphToolsFoundation.Overdrive;
-using UnityEditor.ShaderGraph.GraphUI;
 using UnityEngine;
 using UnityEngine.GraphToolsFoundation.CommandStateObserver;
 
@@ -9,16 +8,13 @@ namespace UnityEditor.ShaderGraph.GraphUI
     {
         PreviewManager m_PreviewManagerInstance;
         GraphModelStateComponent m_GraphModelStateComponent;
-        ShaderGraphStateComponent m_ShaderGraphStateComponent;
 
         public GraphModelStateObserver(
             GraphModelStateComponent graphModelStateComponent,
-            ShaderGraphStateComponent shaderGraphStateComponent,
-            PreviewManager previewManager) : base(new IStateComponent[] {graphModelStateComponent}, new IStateComponent[] {graphModelStateComponent, shaderGraphStateComponent})
+            PreviewManager previewManager) : base(new IStateComponent[] {graphModelStateComponent}, new IStateComponent[] {graphModelStateComponent})
         {
             m_PreviewManagerInstance = previewManager;
             m_GraphModelStateComponent = graphModelStateComponent;
-            m_ShaderGraphStateComponent = shaderGraphStateComponent;
         }
 
         public override void Observe()
@@ -28,11 +24,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
             {
                 if (graphViewObservation.UpdateType != UpdateType.None)
                 {
-                    using (var shaderGraphStateUpdater = m_ShaderGraphStateComponent.UpdateScope)
-                    {
-                        shaderGraphStateUpdater.UpdateShaderGraphState();
-                    }
-
                     var changeset = m_GraphModelStateComponent.GetAggregatedChangeset(graphViewObservation.LastObservedVersion);
 
                     foreach (var addedModel in changeset.NewModels)

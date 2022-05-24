@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.GraphToolsFoundation.Overdrive;
 using UnityEngine;
 using UnityEngine.GraphToolsFoundation.CommandStateObserver;
@@ -10,15 +11,11 @@ namespace UnityEditor.ShaderGraph.GraphUI
 {
     public class ShaderGraphEditorWindow : GraphViewEditorWindow
     {
-        ShaderGraphGraphTool m_GraphTool;
-
         protected PreviewManager m_PreviewManager;
 
-        private IGraphAsset Asset => m_GraphTool.ToolState.CurrentGraph.GetGraphAsset();
+        private IGraphAsset Asset => GraphTool.ToolState.CurrentGraph.GetGraphAsset();
 
         protected GraphModelStateObserver m_GraphModelStateObserver;
-
-        protected ShaderGraphStateComponent m_ShaderGraphStateComponent;
 
         // This Flag gets set when the editor window is closed with the graph still in a dirty state,
         // letting various sub-systems and the user know on window re-open that the graph is still dirty
@@ -137,7 +134,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         private string GetSaveChangesMessage()
         {
             return "Do you want to save the changes you made in the Shader Graph?\n\n" +
-                m_GraphTool.ToolState.CurrentGraph.GetGraphAsset() +
+                GraphTool.ToolState.CurrentGraph.GetGraphAsset() +
                 "\n\nYour changes will be lost if you don't save them.";
         }
 
@@ -146,7 +143,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
             bool saved = false;
             bool okToClose = false;
 
-            var originalAssetPath = m_GraphTool.ToolState.CurrentGraph.GetGraphAsset();
+            var originalAssetPath = GraphTool.ToolState.CurrentGraph.GetGraphAsset();
             int option = EditorUtility.DisplayDialogComplex(
                 "Graph removed from project",
                 "The file has been deleted or removed from the project folder.\n\n" +
@@ -176,16 +173,14 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         bool DoesAssetFileExist()
         {
-            var assetPath = m_GraphTool.ToolState.CurrentGraph.GetGraphAssetPath();
+            var assetPath = GraphTool.ToolState.CurrentGraph.GetGraphAssetPath();
             return File.Exists(assetPath);
         }
 
         protected override BaseGraphTool CreateGraphTool()
         {
-            m_GraphTool = CsoTool.Create<ShaderGraphGraphTool>(WindowID);
-            m_ShaderGraphStateComponent = new ShaderGraphStateComponent(Asset as ShaderGraphAssetModel);
-            m_GraphTool.State.AddStateComponent(m_ShaderGraphStateComponent);
-            return m_GraphTool;
+            var graphTool = CsoTool.Create<ShaderGraphGraphTool>(WindowID);
+            return graphTool;
         }
 
         protected override GraphView CreateGraphView()
@@ -194,11 +189,10 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
             var shaderGraphView = new ShaderGraphView(this, GraphTool, GraphTool.Name);
             m_PreviewManager = new PreviewManager(shaderGraphView.GraphViewModel.GraphModelState);
-            m_GraphModelStateObserver = new GraphModelStateObserver(shaderGraphView.GraphViewModel.GraphModelState, m_ShaderGraphStateComponent, m_PreviewManager);
-            GraphTool.ObserverManager.RegisterObserver(m_GraphModelStateObserver);
 
-            // TODO (Brett) Command registration or state handler creation belongs here.
-            // Example: graphView.RegisterCommandHandler<SetNumberOfInputPortCommand>(SetNumberOfInputPortCommand.DefaultCommandHandler);
+            // Create the Graph Model State Observer and register it
+            m_GraphModelStateObserver = new GraphModelStateObserver(shaderGraphView.GraphViewModel.GraphModelState, m_PreviewManager);
+            GraphTool.ObserverManager.RegisterObserver(m_GraphModelStateObserver);
 
             return shaderGraphView;
         }
@@ -226,7 +220,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
             {
                 m_PreviewManager.Initialize(GraphTool.ToolState.GraphModel as ShaderGraphModel, m_WasWindowCloseCancelledInDirtyState);
                 var shaderGraphModel = GraphTool.ToolState.GraphModel as ShaderGraphModel;
-                ShaderGraphCommandsRegistrar.RegisterCommandHandlers(GraphTool, GraphView, GraphView.GraphViewModel, m_ShaderGraphStateComponent, m_PreviewManager, shaderGraphModel, GraphTool.Dispatcher);
+                ShaderGraphCommandsRegistrar.RegisterCommandHandlers(GraphTool, GraphView, GraphView.GraphViewModel, m_PreviewManager, shaderGraphModel, GraphTool.Dispatcher);
             }
             m_PreviewManager.Update();
         }

@@ -186,6 +186,8 @@ namespace UnityEditor.ShaderGraph.GraphUI
             bool nodeHasPreview = nodeUIDescriptor.HasPreview && existsInGraphData;
             m_PortMappings.Clear();
 
+            // TODO(Sai): The context node lose ports/context entry info on undo/redo-ed
+
             // TODO: Convert this to a NodePortsPart maybe?
             foreach (var portReader in nodeReader.GetPorts())
             {

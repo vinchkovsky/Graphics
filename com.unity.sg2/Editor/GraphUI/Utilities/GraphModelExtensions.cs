@@ -34,6 +34,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
                         // Use this node's generated guid to bind it to an underlying element in the graph data.
                         var graphDataName = nodeModel.Guid.ToString();
+                        // TODO: (Sai) Figure out how we can push graph handler state to undo stack prior to doing this
                         ((ShaderGraphModel)graphModel).GraphHandler.AddNode(registryKey, graphDataName, registry);
                         nodeModel.graphDataName = graphDataName;
                     }

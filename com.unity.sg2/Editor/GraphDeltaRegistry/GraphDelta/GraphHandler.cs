@@ -111,7 +111,7 @@ namespace UnityEditor.ShaderGraph.GraphDelta
                     var builder = registry.GetNodeBuilder(node.GetRegistryKey());
                     if (builder != null)
                     {
-                        if (builder.GetRegistryFlags() == RegistryFlags.Func)
+                        if (builder.GetRegistryFlags() == RegistryFlags.Func || builder is ContextBuilder)
                         {
                             ReconcretizeNode(node.ID.FullPath);
                         }

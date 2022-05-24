@@ -683,6 +683,7 @@ namespace UnityEditor.GraphToolsFoundation.Overdrive.BasicModel
             return nodeModel;
         }
 
+
         /// <summary>
         /// Instantiates a new node.
         /// </summary>
@@ -928,6 +929,7 @@ namespace UnityEditor.GraphToolsFoundation.Overdrive.BasicModel
         {
             return typeof(EdgeModel);
         }
+
 
         /// <inheritdoc />
         public IEdgeModel CreateEdge(IPortModel toPort, IPortModel fromPort, SerializableGUID guid = default)

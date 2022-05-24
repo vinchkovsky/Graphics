@@ -6,23 +6,10 @@ namespace UnityEditor.ShaderGraph.GraphUI
 {
     public static class ShaderGraphCommandsRegistrar
     {
-        public static void RegisterCommandHandlers(BaseGraphTool graphTool, GraphView graphView, GraphViewModel graphViewModel, ShaderGraphStateComponent shaderGraphStateComponent, PreviewManager previewManager, ShaderGraphModel shaderGraphModel, Dispatcher dispatcher)
+        public static void RegisterCommandHandlers(BaseGraphTool graphTool, GraphView graphView, GraphViewModel graphViewModel, PreviewManager previewManager, ShaderGraphModel shaderGraphModel, Dispatcher dispatcher)
         {
             if (dispatcher is not CommandDispatcher commandDispatcher)
                 return;
-
-            // Demo commands (TODO: Remove)
-            //commandDispatcher.RegisterCommandHandler<UndoStateComponent, GraphViewStateComponent, AddPortCommand>(
-            //    AddPortCommand.DefaultCommandHandler,
-            //    graphTool.UndoStateComponent,
-            //    graphView.GraphViewState
-            //);
-
-            //commandDispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, RemovePortCommand>(
-            //    RemovePortCommand.DefaultCommandHandler,
-            //    graphTool.UndoStateComponent,
-            //    graphView.GraphModelState
-            //);
 
             // Shader Graph commands
             commandDispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, AddRedirectNodeCommand>(
@@ -36,16 +23,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 graphViewModel.GraphModelState,
                 previewManager
             );
-
-            // Unregister the default command handler for the undo-redo command
-            commandDispatcher.UnregisterCommandHandler<UndoRedoCommand>();
-            // Bind our command handler instead
-            commandDispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, ShaderGraphStateComponent, PreviewManager, UndoRedoCommand>(
-                UndoRedoCommandHandler.HandleUndoRedo,
-                graphTool.UndoStateComponent,
-                graphViewModel.GraphModelState,
-                shaderGraphStateComponent,
-                previewManager);
 
             commandDispatcher.RegisterCommandHandler<UndoStateComponent, ShaderGraphAssetModel, ChangeActiveTargetsCommand>(
                 ChangeActiveTargetsCommand.DefaultCommandHandler,

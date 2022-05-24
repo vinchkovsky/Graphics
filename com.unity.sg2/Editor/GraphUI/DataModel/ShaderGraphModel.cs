@@ -5,6 +5,7 @@ using Unity.Profiling;
 using UnityEditor.GraphToolsFoundation.Overdrive;
 using UnityEditor.GraphToolsFoundation.Overdrive.BasicModel;
 using UnityEditor.ShaderGraph.GraphDelta;
+using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 using UnityEngine.GraphToolsFoundation.Overdrive;
 
@@ -23,6 +24,29 @@ namespace UnityEditor.ShaderGraph.GraphUI
         public ShaderGraphAssetModel ShaderGraphAssetModel => Asset as ShaderGraphAssetModel;
 
         public Registry RegistryInstance => ((ShaderGraphStencil)Stencil).GetRegistry();
+
+        [SerializeField]
+        string m_GraphJSON = new (String.Empty);
+
+        [SerializeField]
+        string m_TargetSettingsJSON = new (String.Empty);
+
+        public string graphModelJson => m_GraphJSON;
+
+        public string targetSettingsJson => m_TargetSettingsJSON;
+
+        public void SaveShaderGraphStateToJson()
+        {
+            m_GraphJSON = GraphHandler.ToSerializedFormat();
+            m_TargetSettingsJSON = MultiJson.Serialize(ShaderGraphAssetModel.targetSettingsObject);
+        }
+
+        public void RestoreShaderGraphStateFromJson()
+        {
+            ShaderGraphAssetModel.GraphHandler = GraphHandler.FromSerializedFormat(graphModelJson, RegistryInstance);
+            ShaderGraphAssetModel.GraphHandler.ReconcretizeAll();
+            MultiJson.Deserialize(ShaderGraphAssetModel.targetSettingsObject, targetSettingsJson);
+        }
 
         protected override Type GetEdgeType(IPortModel toPort, IPortModel fromPort)
         {
