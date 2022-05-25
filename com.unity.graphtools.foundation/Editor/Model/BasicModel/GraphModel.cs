@@ -669,8 +669,9 @@ namespace UnityEditor.GraphToolsFoundation.Overdrive.BasicModel
             }
         }
 
+        /// GTF-EDIT: Added virtual modifier
         /// <inheritdoc />
-        public INodeModel CreateNode(Type nodeTypeToCreate, string nodeName, Vector2 position,
+        public virtual INodeModel CreateNode(Type nodeTypeToCreate, string nodeName, Vector2 position,
             SerializableGUID guid = default, Action<INodeModel> initializationCallback = null, SpawnFlags spawnFlags = SpawnFlags.Default)
         {
             var nodeModel = InstantiateNode(nodeTypeToCreate, nodeName, position, guid, initializationCallback);
@@ -791,8 +792,9 @@ namespace UnityEditor.GraphToolsFoundation.Overdrive.BasicModel
             return deletedBadges;
         }
 
+        /// GTF-EDIT: Added virtual modifier
         /// <inheritdoc />
-        public INodeModel DuplicateNode(INodeModel sourceNode, Vector2 delta)
+        public virtual INodeModel DuplicateNode(INodeModel sourceNode, Vector2 delta)
         {
             var pastedNodeModel = sourceNode.Clone();
 
@@ -875,7 +877,8 @@ namespace UnityEditor.GraphToolsFoundation.Overdrive.BasicModel
             return null;
         }
 
-        public IReadOnlyCollection<IGraphElementModel> DeleteNodes(IReadOnlyCollection<INodeModel> nodeModels, bool deleteConnections)
+        /// GTF-EDIT: Added virtual modifier
+        public virtual IReadOnlyCollection<IGraphElementModel> DeleteNodes(IReadOnlyCollection<INodeModel> nodeModels, bool deleteConnections)
         {
             var deletedModels = new List<IGraphElementModel>();
 
@@ -931,8 +934,9 @@ namespace UnityEditor.GraphToolsFoundation.Overdrive.BasicModel
         }
 
 
+        /// GTF-EDIT: Added virtual modifier
         /// <inheritdoc />
-        public IEdgeModel CreateEdge(IPortModel toPort, IPortModel fromPort, SerializableGUID guid = default)
+        public virtual IEdgeModel CreateEdge(IPortModel toPort, IPortModel fromPort, SerializableGUID guid = default)
         {
             var existing = this.GetEdgeConnectedToPorts(toPort, fromPort);
             if (existing != null)
@@ -961,8 +965,9 @@ namespace UnityEditor.GraphToolsFoundation.Overdrive.BasicModel
             return edgeModel;
         }
 
+        /// GTF-EDIT: Added virtual modifier
         /// <inheritdoc />
-        public IReadOnlyCollection<IGraphElementModel> DeleteEdges(IReadOnlyCollection<IEdgeModel> edgeModels)
+        public virtual IReadOnlyCollection<IGraphElementModel> DeleteEdges(IReadOnlyCollection<IEdgeModel> edgeModels)
         {
             var deletedModels = new List<IGraphElementModel>();
 

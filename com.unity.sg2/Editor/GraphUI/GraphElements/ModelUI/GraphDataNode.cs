@@ -109,12 +109,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
             PartList.AppendPart(m_NodePreviewPart);
         }
 
-        protected override void UpdateElementFromModel()
-        {
-            base.UpdateElementFromModel();
-            Debug.Log("GraphDataNode.UpdateElementFromModel override");
-        }
-
         protected override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
             evt.menu.AppendSeparator();

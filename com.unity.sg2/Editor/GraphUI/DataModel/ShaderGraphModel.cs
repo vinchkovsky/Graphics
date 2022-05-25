@@ -7,6 +7,7 @@ using UnityEditor.GraphToolsFoundation.Overdrive.BasicModel;
 using UnityEditor.ShaderGraph.GraphDelta;
 using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.GraphToolsFoundation.Overdrive;
 
 namespace UnityEditor.ShaderGraph.GraphUI
@@ -46,6 +47,123 @@ namespace UnityEditor.ShaderGraph.GraphUI
             ShaderGraphAssetModel.GraphHandler = GraphHandler.FromSerializedFormat(graphModelJson, RegistryInstance);
             ShaderGraphAssetModel.GraphHandler.ReconcretizeAll();
             MultiJson.Deserialize(ShaderGraphAssetModel.targetSettingsObject, targetSettingsJson);
+        }
+
+        public override IEdgeModel CreateEdge(IPortModel toPort, IPortModel fromPort, SerializableGUID guid = default)
+        {
+            var resolvedSource = fromPort;
+            var resolvedDestinations = new List<IPortModel>();
+
+            if (toPort.NodeModel is RedirectNodeModel toRedir)
+            {
+                resolvedDestinations = toRedir.ResolveDestinations().ToList();
+
+                foreach (var child in toRedir.GetRedirectTree(true))
+                {
+                    child.UpdateTypeFrom(fromPort);
+                }
+            }
+            else
+            {
+                resolvedDestinations.Add(toPort);
+            }
+
+            if (fromPort.NodeModel is RedirectNodeModel fromRedir)
+            {
+                resolvedSource = fromRedir.ResolveSource();
+            }
+
+            var edgeModel = base.CreateEdge(toPort, fromPort, guid);
+
+            if (resolvedSource is not GraphDataPortModel fromDataPort)
+                return edgeModel;
+
+            // Make the corresponding connections in Shader Graph's data model.
+            foreach (var toDataPort in resolvedDestinations.OfType<GraphDataPortModel>())
+            {
+                // Validation should have already happened in GraphModel.IsCompatiblePort.
+                Assert.IsTrue(TryConnect(fromDataPort, toDataPort));
+            }
+
+            return edgeModel;
+        }
+
+        public override IEdgeModel DuplicateEdge(IEdgeModel sourceEdge, INodeModel targetInputNode, INodeModel targetOutputNode)
+        {
+            return base.DuplicateEdge(sourceEdge, targetInputNode, targetOutputNode);
+        }
+
+        public override IReadOnlyCollection<IGraphElementModel> DeleteEdges(IReadOnlyCollection<IEdgeModel> edgeModels)
+        {
+            return base.DeleteEdges(edgeModels);
+        }
+
+        public override IReadOnlyCollection<IGraphElementModel> DeleteNodes(IReadOnlyCollection<INodeModel> nodeModels, bool deleteConnections)
+        {
+            return base.DeleteNodes(nodeModels, deleteConnections);
+        }
+
+        public GraphDataNodeModel CreateGraphDataNode(RegistryKey registryKey, string nodeName, Vector2 position, SerializableGUID guid = default, SpawnFlags spawnFlags = SpawnFlags.None)
+        {
+            var nodeModel = this.CreateNode<GraphDataNodeModel>(
+                nodeName,
+                position,
+                guid,
+                nodeModel =>
+                {
+                    if (spawnFlags.IsOrphan())
+                    {
+                        // Orphan nodes aren't a part of the graph, so we don't use an actual name in the graph data
+                        // to represent them.
+                        nodeModel.SetSearcherPreviewRegistryKey(registryKey);
+                    }
+                    else
+                    {
+                        // Use this node's generated guid to bind it to an underlying element in the graph data.
+                        var graphDataName = guid.ToString();
+                        // TODO: Replace with boxing solution
+                        GraphHandler.AddNode(registryKey, graphDataName);
+                        nodeModel.graphDataName = graphDataName;
+                    }
+                },
+                spawnFlags
+            );
+
+            return nodeModel;
+        }
+
+        public GraphDataContextNodeModel CreateGraphDataContextNode(
+            string existingContextName,
+            Vector2 position = default,
+            SerializableGUID guid = default,
+            SpawnFlags spawnFlags = SpawnFlags.Default
+        )
+        {
+            return this.CreateNode<GraphDataContextNodeModel>(
+                existingContextName,
+                position,
+                guid,
+                nodeModel =>
+                {
+                    nodeModel.graphDataName = existingContextName;
+                },
+                spawnFlags
+            );
+        }
+
+        public override INodeModel CreateNode(Type nodeTypeToCreate, string nodeName, Vector2 position, SerializableGUID guid = default, Action<INodeModel> initializationCallback = null, SpawnFlags spawnFlags = SpawnFlags.None)
+        {
+            return base.CreateNode(nodeTypeToCreate, nodeName, position, guid, initializationCallback, spawnFlags);
+        }
+
+        public override IConstantNodeModel CreateConstantNode(TypeHandle constantTypeHandle, string constantName, Vector2 position, SerializableGUID guid = default, Action<IConstantNodeModel> initializationCallback = null, SpawnFlags spawnFlags = SpawnFlags.None)
+        {
+            return base.CreateConstantNode(constantTypeHandle, constantName, position, guid, initializationCallback, spawnFlags);
+        }
+
+        public override INodeModel DuplicateNode(INodeModel sourceNode, Vector2 delta)
+        {
+            return base.DuplicateNode(sourceNode, delta);
         }
 
         protected override Type GetEdgeType(IPortModel toPort, IPortModel fromPort)

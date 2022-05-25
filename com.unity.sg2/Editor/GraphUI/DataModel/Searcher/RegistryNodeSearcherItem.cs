@@ -12,23 +12,21 @@ namespace UnityEditor.ShaderGraph.GraphUI
     /// </summary>
     public class RegistryNodeSearcherItem : GraphNodeModelSearcherItem
     {
-        public readonly RegistryKey registryKey;
+        readonly RegistryKey m_RegistryKey;
 
-        public override string Name => registryKey.Name;
+        public override string Name => m_RegistryKey.Name;
 
         public RegistryNodeSearcherItem(
-            IGraphModel graphModel,
+            ShaderGraphModel graphModel,
             RegistryKey registryKey,
             string name,
             ISearcherItemData data = null,
             List<SearcherItem> children = null,
             Func<string> getName = null,
             string help = null
-        ) : base(graphModel, data,  creationData => graphModel.CreateGraphDataNode(registryKey, name, creationData.Position, creationData.Guid, creationData.SpawnFlags), name, children, getName, help)
+        ) : base(data,  creationData => graphModel.CreateGraphDataNode(registryKey, name, creationData.Position, creationData.Guid, creationData.SpawnFlags))
         {
-
-            // Func<IGraphNodeCreationData, IGraphElementModel> createElement,
-            this.registryKey = registryKey;
+            m_RegistryKey = registryKey;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
             CreateEdgeCommand.DefaultCommandHandler(undoState, graphModelState, selectionState, preferences, command);
 
-            var resolvedSource = command.FromPortModel;
+            /*var resolvedSource = command.FromPortModel;
             var resolvedDestinations = new List<IPortModel>();
 
             if (command.ToPortModel.NodeModel is RedirectNodeModel toRedir)
@@ -58,7 +58,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
                 // Notify preview manager that this nodes connections have changed
                 previewManager.OnNodeFlowChanged(toDataPort.owner.graphDataName);
-            }
+            }*/
         }
 
         public static void HandleBypassNodes(
