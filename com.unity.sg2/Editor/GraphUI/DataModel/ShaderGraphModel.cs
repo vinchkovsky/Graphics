@@ -18,6 +18,32 @@ namespace UnityEditor.ShaderGraph.GraphUI
         Downstream
     }
 
+    [Serializable]
+    class MainPreviewData
+    {
+        public SerializableMesh serializedMesh = new ();
+        public bool preventRotation;
+
+        public int width = 125;
+        public int height = 125;
+
+        [NonSerialized]
+        public Quaternion rotation = Quaternion.identity;
+
+        [NonSerialized]
+        public float scale = 1f;
+
+        public void Initialize()
+        {
+            if (serializedMesh.IsNotInitialized)
+            {
+                // Initialize the sphere mesh as the default
+                Mesh sphereMesh = Resources.GetBuiltinResource(typeof(Mesh), $"Sphere.fbx") as Mesh;
+                serializedMesh.mesh = sphereMesh;
+            }
+        }
+    }
+
     public class ShaderGraphModel : GraphModel
     {
         public GraphHandler GraphHandler => ShaderGraphAssetModel.GraphHandler;
@@ -26,6 +52,38 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         public Registry RegistryInstance => ((ShaderGraphStencil)Stencil).GetRegistry();
 
+        #region MainPreviewData
+        MainPreviewData m_MainPreviewData = new ();
+
+        internal MainPreviewData mainPreviewData => m_MainPreviewData;
+
+        public void SetPreviewMesh(Mesh newPreviewMesh)
+        {
+            m_MainPreviewData.serializedMesh.mesh = newPreviewMesh;
+        }
+
+        public void SetPreviewScale(float newPreviewScale)
+        {
+            m_MainPreviewData.scale = newPreviewScale;
+        }
+
+        public void SetPreviewRotation(Quaternion newRotation)
+        {
+            m_MainPreviewData.rotation = newRotation;
+        }
+
+        public void SetPreviewSize(Vector2 newPreviewSize)
+        {
+            m_MainPreviewData.width = Mathf.FloorToInt(newPreviewSize.x);
+            m_MainPreviewData.height = Mathf.FloorToInt(newPreviewSize.y);
+        }
+
+        public void SetPreviewRotationLocked(bool preventRotation)
+        {
+            m_MainPreviewData.preventRotation = preventRotation;
+        }
+
+        #endregion
         [SerializeField]
         string m_GraphJSON = new (String.Empty);
 
@@ -39,6 +97,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         public void SaveShaderGraphStateToJson()
         {
             m_GraphJSON = GraphHandler.ToSerializedFormat();
+
             m_TargetSettingsJSON = MultiJson.Serialize(ShaderGraphAssetModel.targetSettingsObject);
         }
 
@@ -103,7 +162,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
             return base.DeleteNodes(nodeModels, deleteConnections);
         }
 
-        public GraphDataNodeModel CreateGraphDataNode(RegistryKey registryKey, string nodeName, Vector2 position, SerializableGUID guid = default, SpawnFlags spawnFlags = SpawnFlags.None)
+        public GraphDataNodeModel CreateGraphDataNode(RegistryKey registryKey, string nodeName, Vector2 position = default, SerializableGUID guid = default, SpawnFlags spawnFlags = SpawnFlags.None)
         {
             var nodeModel = this.CreateNode<GraphDataNodeModel>(
                 nodeName,
@@ -213,6 +272,8 @@ namespace UnityEditor.ShaderGraph.GraphUI
                     this.CreateGraphDataContextNode(localPath);
                 }
             }
+
+            m_MainPreviewData.Initialize();
         }
 
         public bool IsSubGraph => ShaderGraphAssetModel.IsSubGraph;

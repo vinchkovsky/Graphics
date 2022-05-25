@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using NUnit.Framework;
 using UnityEditor.GraphToolsFoundation.Overdrive;
+using UnityEditor.ShaderGraph.GraphDelta;
 using UnityEngine.UIElements;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -99,7 +100,7 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests
         [UnityTest]
         public IEnumerator TestContextNodesCannotBeDeleted()
         {
-            var beforeContext = m_GraphView.GraphModel.NodeModels.OfType<GraphDataContextNodeModel>().FirstOrDefault();
+            var beforeContext = m_ShaderGraphModel.NodeModels.OfType<GraphDataContextNodeModel>().FirstOrDefault();
             Assert.IsNotNull(beforeContext, "Graph must contain at least one context node for test");
 
             // Select element programmatically because it might be behind another one
@@ -147,8 +148,67 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests
             m_ShaderGraphWindowTestHelper.SimulateKeyPress("V", modifiers: EventModifiers.Control);
             yield return null;
 
-            var afterContexts = m_GraphView.GraphModel.NodeModels.OfType<GraphDataContextNodeModel>().ToList();
+            var afterContexts = m_ShaderGraphModel.NodeModels.OfType<GraphDataContextNodeModel>().ToList();
             Assert.AreEqual(beforeContexts.Count, afterContexts.Count, "Context node should not be duplicated by copy/paste");
+        }
+
+        [UnityTest]
+        public IEnumerator TestOutdatedNodeGetsUpgradeBadge()
+        {
+            var node = m_ShaderGraphModel.CreateGraphDataNode(
+                new RegistryKey {Name = "TestUpgrade", Version = 1},
+                nodeName: "V1"
+            );
+            yield return null;
+
+            var errors = m_GraphView.GraphTool.GraphProcessingState.Errors;
+            Assert.IsTrue(errors.Count == 1, "Outdated node should create 1 graph processing error");
+            Assert.IsTrue(errors[0].ParentModel == node, "Graph processing error should be attached to outdated node");
+            Assert.IsTrue(errors[0].ErrorType == LogType.Warning, "Graph processing error should be a warning");
+        }
+
+        [UnityTest]
+        public IEnumerator TestUpToDateNodeDoesNotGetUpgradeBadge()
+        {
+            m_ShaderGraphModel.CreateGraphDataNode(
+                new RegistryKey {Name = "TestUpgrade", Version = 2},
+                nodeName: "V2"
+            );
+            yield return null;
+
+            var errors = m_GraphView.GraphTool.GraphProcessingState.Errors;
+            Assert.IsTrue(errors.Count == 0, "Up-to-date node should not have any warnings");
+        }
+
+        [UnityTest]
+        public IEnumerator TestNodeCanBeUpgraded()
+        {
+            var node = m_ShaderGraphModel.CreateGraphDataNode(
+                new RegistryKey {Name = "TestUpgrade", Version = 1},
+                nodeName: "V1"
+            );
+            yield return null;
+
+            m_GraphView.Dispatch(new UpgradeNodeCommand(node));
+            yield return null;
+
+            Assert.AreEqual(2, node.registryKey.Version, "Upgrading a node should set it to the latest version");
+        }
+
+        [UnityTest]
+        public IEnumerator TestDismissingUpgradeRemovesBadge()
+        {
+            var node = m_ShaderGraphModel.CreateGraphDataNode(
+                new RegistryKey {Name = "TestUpgrade", Version = 1},
+                nodeName: "V1"
+            );
+            yield return null;
+
+            m_GraphView.Dispatch(new DismissNodeUpgradeCommand(node));
+            yield return null;
+
+            var errors = m_GraphView.GraphTool.GraphProcessingState.Errors;
+            Assert.IsTrue(errors.Count == 0, "Dismissing node upgrade should remove warning badges");
         }
 
         /*

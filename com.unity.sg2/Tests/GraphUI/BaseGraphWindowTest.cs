@@ -16,6 +16,7 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests
 
         protected TestEditorWindow m_Window;
         protected TestGraphView m_GraphView;
+        protected ShaderGraphModel m_ShaderGraphModel => m_Window.GraphTool.ToolState.GraphModel as ShaderGraphModel;
 
         // Used to send events to the highest shader graph editor window
         protected TestEventHelpers m_ShaderGraphWindowTestHelper;
@@ -93,9 +94,10 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests
             m_Window.Show();
             m_Window.Focus();
             m_Window.SetCurrentSelection(graphAsset, GraphViewEditorWindow.OpenMode.OpenAndFocus);
-            yield return null;
 
-            yield return null;
+            // Wait till the graph model is loaded back up
+            while (m_Window.GraphView.GraphModel == null)
+                yield return null;
         }
 
         public SearcherWindow SummonSearcher()

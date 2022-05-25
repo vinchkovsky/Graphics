@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using UnityEditor.GraphToolsFoundation.Overdrive;
+﻿using UnityEditor.GraphToolsFoundation.Overdrive;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace UnityEditor.ShaderGraph.GraphUI.UnitTests

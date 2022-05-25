@@ -22,9 +22,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
             CreateEdgeCommand.DefaultCommandHandler(undoState, graphModelState, selectionState, preferences, command);
 
-            /*var resolvedSource = command.FromPortModel;
             var resolvedDestinations = new List<IPortModel>();
-
             if (command.ToPortModel.NodeModel is RedirectNodeModel toRedir)
             {
                 resolvedDestinations = toRedir.ResolveDestinations().ToList();
@@ -33,32 +31,15 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 using var graphUpdater = graphModelState.UpdateScope;
                 foreach (var child in toRedir.GetRedirectTree(true))
                 {
-                    child.UpdateTypeFrom(command.FromPortModel);
                     graphUpdater.MarkChanged(child);
                 }
             }
-            else
-            {
-                resolvedDestinations.Add(command.ToPortModel);
-            }
 
-            if (command.FromPortModel.NodeModel is RedirectNodeModel fromRedir)
-            {
-                resolvedSource = fromRedir.ResolveSource();
-            }
-
-            if (resolvedSource is not GraphDataPortModel fromDataPort) return;
-
-            // Make the corresponding connections in Shader Graph's data model.
-            var shaderGraphModel = (ShaderGraphModel) graphModelState.GraphModel;
             foreach (var toDataPort in resolvedDestinations.OfType<GraphDataPortModel>())
             {
-                // Validation should have already happened in GraphModel.IsCompatiblePort.
-                Assert.IsTrue(shaderGraphModel.TryConnect(fromDataPort, toDataPort));
-
                 // Notify preview manager that this nodes connections have changed
                 previewManager.OnNodeFlowChanged(toDataPort.owner.graphDataName);
-            }*/
+            }
         }
 
         public static void HandleBypassNodes(
