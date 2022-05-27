@@ -16,17 +16,17 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         public static void DefaultCommandHandler(
             UndoStateComponent undoState,
-            GraphModelStateComponent graphViewState,
+            GraphModelStateComponent graphModelState,
             PreviewManager previewManager,
             ChangePreviewExpandedCommand command
         )
         {
             using (var undoStateUpdater = undoState.UpdateScope)
             {
-                undoStateUpdater.SaveSingleState(graphViewState, command);
+                undoStateUpdater.SaveSingleState(graphModelState, command);
             }
 
-            using (var graphUpdater = graphViewState.UpdateScope)
+            using (var graphUpdater = graphModelState.UpdateScope)
             {
                 foreach (var graphElementModel in command.Models)
                 {

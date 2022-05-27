@@ -199,10 +199,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
             var shaderGraphView = new ShaderGraphView(this, GraphTool, GraphTool.Name);
             m_PreviewManager = new PreviewManager(shaderGraphView.GraphViewModel.GraphModelState);
 
-            // Create the Graph Model State Observer and register it
-            m_GraphModelStateObserver = new GraphModelStateObserver(shaderGraphView.GraphViewModel.GraphModelState, m_PreviewManager);
-            GraphTool.ObserverManager.RegisterObserver(m_GraphModelStateObserver);
-
             return shaderGraphView;
         }
 
@@ -229,6 +225,13 @@ namespace UnityEditor.ShaderGraph.GraphUI
             {
                 m_PreviewManager.Initialize(GraphTool.ToolState.GraphModel as ShaderGraphModel, m_MainPreviewView, m_WasWindowCloseCancelledInDirtyState);
                 var shaderGraphModel = GraphTool.ToolState.GraphModel as ShaderGraphModel;
+                shaderGraphModel.graphModelStateComponent = GraphView.GraphViewModel.GraphModelState;
+                shaderGraphModel.selectionStateComponent = GraphView.GraphViewModel.SelectionState;
+
+                // Create the Graph Model State Observer and register it
+                m_GraphModelStateObserver = new GraphModelStateObserver(GraphView.GraphViewModel.GraphModelState, m_PreviewManager, shaderGraphModel.GraphHandler);
+                GraphTool.ObserverManager.RegisterObserver(m_GraphModelStateObserver);
+
                 ShaderGraphCommandsRegistrar.RegisterCommandHandlers(GraphTool, GraphView, GraphView.GraphViewModel, m_PreviewManager, shaderGraphModel, GraphTool.Dispatcher);
             }
 

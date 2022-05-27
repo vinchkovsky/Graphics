@@ -46,6 +46,11 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
     public class ShaderGraphModel : GraphModel
     {
+        [NonSerialized]
+        public GraphModelStateComponent graphModelStateComponent;
+        [NonSerialized]
+        public SelectionStateComponent selectionStateComponent;
+
         public GraphHandler GraphHandler => ShaderGraphAssetModel.GraphHandler;
 
         public ShaderGraphAssetModel ShaderGraphAssetModel => Asset as ShaderGraphAssetModel;
@@ -110,16 +115,43 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         public override IEdgeModel CreateEdge(IPortModel toPort, IPortModel fromPort, SerializableGUID guid = default)
         {
+            IPortModel resolvedEdgeSource = null;
+            List<IPortModel> resolvedEdgeDestinations = null;
+            using var graphModelStateUpdater = graphModelStateComponent.UpdateScope;
+            {
+                resolvedEdgeSource = HandleRedirectNodesCreation(graphModelStateUpdater, toPort, fromPort, out resolvedEdgeDestinations);
+            }
+
+            var edgeModel = base.CreateEdge(toPort, fromPort, guid);
+
+            if (resolvedEdgeSource is GraphDataPortModel fromDataPort)
+            {
+                // Make the corresponding connections in CLDS data model
+                foreach (var toDataPort in resolvedEdgeDestinations.OfType<GraphDataPortModel>())
+                {
+                    // Validation should have already happened in GraphModel.IsCompatiblePort.
+                    Assert.IsTrue(TryConnect(fromDataPort, toDataPort));
+                }
+            }
+
+            return edgeModel;
+
+        }
+
+        static IPortModel HandleRedirectNodesCreation(GraphModelStateComponent.StateUpdater graphUpdater, IPortModel toPort, IPortModel fromPort, out List<IPortModel> resolvedDestinations)
+        {
             var resolvedSource = fromPort;
-            var resolvedDestinations = new List<IPortModel>();
+            resolvedDestinations = new List<IPortModel>();
 
             if (toPort.NodeModel is RedirectNodeModel toRedir)
             {
                 resolvedDestinations = toRedir.ResolveDestinations().ToList();
 
+                // Update types of descendant redirect nodes.
                 foreach (var child in toRedir.GetRedirectTree(true))
                 {
                     child.UpdateTypeFrom(fromPort);
+                    graphUpdater.MarkChanged(child);
                 }
             }
             else
@@ -132,19 +164,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 resolvedSource = fromRedir.ResolveSource();
             }
 
-            var edgeModel = base.CreateEdge(toPort, fromPort, guid);
-
-            if (resolvedSource is not GraphDataPortModel fromDataPort)
-                return edgeModel;
-
-            // Make the corresponding connections in Shader Graph's data model.
-            foreach (var toDataPort in resolvedDestinations.OfType<GraphDataPortModel>())
-            {
-                // Validation should have already happened in GraphModel.IsCompatiblePort.
-                Assert.IsTrue(TryConnect(fromDataPort, toDataPort));
-            }
-
-            return edgeModel;
+            return resolvedSource;
         }
 
         public override IEdgeModel DuplicateEdge(IEdgeModel sourceEdge, INodeModel targetInputNode, INodeModel targetOutputNode)
@@ -154,12 +174,107 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         public override IReadOnlyCollection<IGraphElementModel> DeleteEdges(IReadOnlyCollection<IEdgeModel> edgeModels)
         {
-            return base.DeleteEdges(edgeModels);
+            using var graphModelStateUpdater = graphModelStateComponent.UpdateScope;
+            {
+                foreach (var model in edgeModels)
+                {
+                    if (!model.IsDeletable())
+                        continue;
+
+                    // Reset types on disconnected redirect nodes.
+                    if (model.ToPort.NodeModel is RedirectNodeModel redirect)
+                    {
+                        graphModelStateUpdater.MarkChanged(redirect);
+                        redirect.ClearType();
+                    }
+
+                    graphModelStateUpdater.MarkDeleted(model);
+
+                    // Remove the edge from CLDS
+                    GraphHandler.RemoveEdge(model.FromPortId, model.ToPortId);
+                }
+            }
+            return edgeModels;
         }
 
         public override IReadOnlyCollection<IGraphElementModel> DeleteNodes(IReadOnlyCollection<INodeModel> nodeModels, bool deleteConnections)
         {
-            return base.DeleteNodes(nodeModels, deleteConnections);
+            var redirects = new List<RedirectNodeModel>();
+            var nonRedirects = new List<INodeModel>();
+
+            foreach (var model in nodeModels)
+            {
+                switch (model)
+                {
+                    case RedirectNodeModel redirectModel:
+                        redirects.Add(redirectModel);
+                        break;
+                    default:
+                        nonRedirects.Add(model);
+                        break;
+                }
+            }
+
+            List<IGraphElementModel> deletedModels;
+            using var graphModelStateUpdater = graphModelStateComponent.UpdateScope;
+            {
+                // Partition out redirect nodes because they get special delete behavior.
+                deletedModels = HandleRedirectNodesDeletion(graphModelStateUpdater, redirects);
+            }
+
+            // Delete everything else as usual.
+            deletedModels.AddRange(base.DeleteNodes(nonRedirects, false));
+
+            using var selectionStateUpdater = selectionStateComponent.UpdateScope;
+            {
+                var selectedModels = deletedModels.Where(m => selectionStateComponent.IsSelected(m)).ToList();
+                if (selectedModels.Any())
+                {
+                    // Deselect any now-deleted models that were selected
+                    selectionStateUpdater.SelectElements(selectedModels, false);
+                }
+            }
+
+            // After all redirect nodes handling and deletion has been handled above
+            // Mark the nodes for deletion (actual CLDS node removal happens in GraphModelStateObserver)
+            foreach (var model in deletedModels)
+            {
+                graphModelStateUpdater.MarkDeleted(model);
+            }
+
+            return deletedModels;
+        }
+
+        List<IGraphElementModel> HandleRedirectNodesDeletion(
+            GraphModelStateComponent.StateUpdater graphModelStateUpdater,
+            List<RedirectNodeModel> redirects)
+        {
+            // If redirect node is deleted, connect the incoming edge to all outgoing edges of that redirect node
+            foreach (var redirect in redirects)
+            {
+                var inputEdgeModel = redirect.GetIncomingEdges().FirstOrDefault();
+                var outputEdgeModels = redirect.GetOutgoingEdges().ToList();
+
+                // Delete the redirect node edges first
+                base.DeleteEdges(outputEdgeModels);
+                this.DeleteEdge(inputEdgeModel);
+
+                graphModelStateUpdater.MarkDeleted(inputEdgeModel);
+                graphModelStateUpdater.MarkDeleted(outputEdgeModels);
+
+                if (inputEdgeModel == null || !outputEdgeModels.Any()) continue;
+
+                foreach (var outputEdgeModel in outputEdgeModels)
+                {
+                    var edge = CreateEdge(outputEdgeModel.ToPort, inputEdgeModel.FromPort);
+                    graphModelStateUpdater.MarkNew(edge);
+                }
+            }
+
+            // Don't delete connections for redirects, because we may have edges we want to preserve
+            // Edges we don't need were already deleted in the above loop.
+            var deletedModels = base.DeleteNodes(redirects, false).ToList();
+            return deletedModels;
         }
 
         public GraphDataNodeModel CreateGraphDataNode(RegistryKey registryKey, string nodeName, Vector2 position = default, SerializableGUID guid = default, SpawnFlags spawnFlags = SpawnFlags.None)

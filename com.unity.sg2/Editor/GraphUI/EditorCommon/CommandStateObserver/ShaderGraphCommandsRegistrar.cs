@@ -11,8 +11,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
             if (dispatcher is not CommandDispatcher commandDispatcher)
                 return;
 
-
-
             // Shader Graph commands
             commandDispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, AddRedirectNodeCommand>(
                 AddRedirectNodeCommand.DefaultHandler,
@@ -58,38 +56,9 @@ namespace UnityEditor.ShaderGraph.GraphUI
             //    previewManager
             //);
 
-            // Overrides for default GTF commands
-            dispatcher.RegisterCommandHandler<BaseGraphTool, GraphViewModel, PreviewManager, CreateEdgeCommand>(
-                ShaderGraphCommandOverrides.HandleCreateEdge,
-                graphTool,
-                graphViewModel,
-                previewManager);
-
-            // Unregister the base GraphView command handling for this as we want to insert our own
-            graphView.Dispatcher.UnregisterCommandHandler<DeleteElementsCommand>();
-            dispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, SelectionStateComponent, PreviewManager, DeleteElementsCommand>(
-                ShaderGraphCommandOverrides.HandleDeleteElements,
-                graphTool.UndoStateComponent,
-                graphViewModel.GraphModelState,
-                graphViewModel.SelectionState,
-                previewManager);
-
-            dispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, SelectionStateComponent, PreviewManager, BypassNodesCommand>(
-                ShaderGraphCommandOverrides.HandleBypassNodes,
-                graphTool.UndoStateComponent,
-                graphViewModel.GraphModelState,
-                graphViewModel.SelectionState,
-                previewManager);
-
             dispatcher.RegisterCommandHandler<GraphViewStateComponent, PreviewManager, RenameElementCommand>(
                 ShaderGraphCommandOverrides.HandleGraphElementRenamed,
                 graphViewModel.GraphViewState,
-                previewManager);
-
-            dispatcher.RegisterCommandHandler<UndoStateComponent, GraphModelStateComponent, PreviewManager, UpdateConstantValueCommand>(
-                ShaderGraphCommandOverrides.HandleUpdateConstantValue,
-                graphTool.UndoStateComponent,
-                graphViewModel.GraphModelState,
                 previewManager);
 
             // Node UI commands

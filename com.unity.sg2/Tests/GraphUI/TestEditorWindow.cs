@@ -12,7 +12,8 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests
 
             var testGraphView = new TestGraphView(this, GraphTool, GraphTool.Name);
             m_PreviewManager = new PreviewManager(testGraphView.GraphViewModel.GraphModelState);
-            m_GraphModelStateObserver = new GraphModelStateObserver(testGraphView.GraphViewModel.GraphModelState, m_PreviewManager);
+            var shaderGraphModel = testGraphView.GraphModel as ShaderGraphModel;
+            m_GraphModelStateObserver = new GraphModelStateObserver(testGraphView.GraphViewModel.GraphModelState, m_PreviewManager, shaderGraphModel.GraphHandler);
             GraphTool.ObserverManager.RegisterObserver(m_GraphModelStateObserver);
 
             return testGraphView;

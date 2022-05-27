@@ -19,13 +19,24 @@ namespace UnityEditor.ShaderGraph.GraphUI
         protected override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
             base.BuildContextualMenu(evt);
-            for (var i = 0; i < evt.menu.MenuItems().Count; ++i)
+
+            RemoveContextMenuOption(evt, "Disable Nodes");
+
+            // TODO: (Sai) When GTF reworks the bypass nodes functionality, revisit this
+            RemoveContextMenuOption(evt, "Bypass Nodes");
+        }
+
+        static void RemoveContextMenuOption(ContextualMenuPopulateEvent evt, string optionName)
+        {
+            for (var index = 0; index < evt.menu.MenuItems().Count; ++index)
             {
-                var menuItem = evt.menu.MenuItems()[i];
-                if (menuItem is DropdownMenuAction { name: "Disable Nodes" })
-                    evt.menu.RemoveItemAt(i);
+                var menuItem = evt.menu.MenuItems()[index];
+                if (menuItem is DropdownMenuAction action && action.name == optionName)
+                {
+                    evt.menu.RemoveItemAt(index);
+                    break;
+                }
             }
-            evt.menu.AppendSeparator();
         }
 
     //    protected override void CollectCopyableGraphElements(
