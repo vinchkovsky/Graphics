@@ -9,15 +9,15 @@ namespace UnityEditor.ShaderGraph.GraphUI
     {
         public ChangeActiveTargetsCommand()
         {
+            UndoString = "Change Active Targets";
         }
 
         public static void DefaultCommandHandler(
             UndoStateComponent undoState,
+            GraphModelStateComponent graphModelState,
             ShaderGraphAssetModel graphAsset,
             ChangeActiveTargetsCommand command)
         {
-            // TODO: How to undo/redo? Do we need a state component to push on the stack with the current target list?
-
             Debug.Log("ChangeActiveTargetsCommand: Target Settings Change is unimplemented");
 
             graphAsset.MarkAsDirty(true);
