@@ -13,14 +13,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
     public class PreviewManager
     {
-        bool m_IsInitialized;
-
-        public bool IsInitialized
-        {
-            get => m_IsInitialized;
-            set => m_IsInitialized = value;
-        }
-
         HeadlessPreviewManager m_PreviewHandlerInstance;
 
         GraphModelStateComponent m_GraphModelStateComponent;
@@ -36,7 +28,11 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         string m_MainContextNodeName = new ShaderGraphContext().GetRegistryKey().Name;
 
-        internal PreviewManager(GraphModelStateComponent graphModelStateComponent)
+        internal PreviewManager(
+            GraphModelStateComponent graphModelStateComponent,
+            ShaderGraphModel graphModel,
+            MainPreviewView mainPreviewView,
+            bool wasWindowCloseCancelled)
         {
             m_GraphModelStateComponent = graphModelStateComponent;
 
@@ -44,15 +40,11 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
             m_DirtyNodes = new HashSet<string>();
             m_NodeLookupTable = new Dictionary<string, SerializableGUID>();
-        }
 
-        internal void Initialize(ShaderGraphModel graphModel, MainPreviewView mainPreviewView, bool wasWindowCloseCancelled)
-        {
             // Can be null when the editor window is opened to the onboarding page
             if (graphModel == null)
                 return;
 
-            m_IsInitialized = true;
             m_GraphModel = graphModel;
 
             // Initialize the main preview
@@ -86,7 +78,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 m_GraphModel.Asset.Dirty = false;
             }
         }
-
         static bool IsMainContextNode(IGraphElementModel nodeModel)
         {
             return nodeModel is GraphDataContextNodeModel contextNode && contextNode.graphDataName == new ShaderGraphContext().GetRegistryKey().Name;
@@ -100,7 +91,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
             {
                 if (!m_NodeLookupTable.TryGetValue(nodeName, out var nodeGuid))
                     continue;
-                
+
                 m_GraphModel.TryGetModelFromGuid(nodeGuid, out var nodeModel);
                 if (IsMainContextNode(nodeModel))
                 {

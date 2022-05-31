@@ -21,12 +21,12 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 return emptyPlaceholder;
 
             m_MainPreviewView = new MainPreviewView(window.GraphTool.Dispatcher);
-            if (m_MainPreviewView != null)
+            if (m_MainPreviewView != null && window.GraphTool is ShaderGraphGraphTool shaderGraphTool)
             {
                 m_MainPreviewView.AddToClassList("MainPreviewView");
                 m_MainPreviewView.AddStylesheet("MainPreviewView.uss");
                 size = new Vector2(125, 125);
-                window.SetMainPreviewReference(m_MainPreviewView);
+                shaderGraphTool.SetMainPreviewReference(m_MainPreviewView);
                 return m_MainPreviewView;
             }
 

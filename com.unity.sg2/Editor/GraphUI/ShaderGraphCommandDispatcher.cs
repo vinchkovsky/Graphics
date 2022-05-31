@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using UnityEditor.GraphToolsFoundation.Overdrive;
 using UnityEngine;
 using UnityEngine.GraphToolsFoundation.CommandStateObserver;
@@ -8,37 +7,47 @@ namespace UnityEditor.ShaderGraph.GraphUI
 {
     public class ShaderGraphCommandDispatcher : CommandDispatcher
     {
-        Type[] m_CommandTypeWhitelist =
+        BaseGraphTool m_GraphTool;
+        ShaderGraphModel shaderGraphModel => m_GraphTool.ToolState.GraphModel as ShaderGraphModel;
+
+        /// <summary>
+        /// Subscribers are notified of when the graph asset has been loaded
+        /// </summary>
+        public Action<ShaderGraphModel> OnGraphLoaded;
+
+        /// <summary>
+        /// Subscribers are notified of when an undo redo action has taken place
+        /// </summary>
+        public Action<ShaderGraphModel> OnUndoRedo;
+
+        public ShaderGraphCommandDispatcher(BaseGraphTool graphTool)
         {
-            typeof(CreateNodeCommand),
-            typeof(CreateEdgeCommand),
-            typeof(DeleteElementsCommand)
-        };
-
-        int m_CurrentUndoGroup;
-
-
-        ShaderGraphModel m_GraphModel;
-        PreviewManager m_PreviewManager;
-
-        protected override void PreDispatchCommand(ICommand command)
-        {
-            if(m_CommandTypeWhitelist.Contains(command.GetType()))
-            {
-
-            }
-
-            base.PreDispatchCommand(command);
+            m_GraphTool = graphTool;
         }
 
-        protected override void PostDispatchCommand(ICommand command)
-        {
-            if(command is UndoRedoCommand)
-            {
-                m_PreviewManager.HandleUndoRedo(m_GraphModel);
-            }
+        ICommand m_LastCommand;
 
-            base.PostDispatchCommand(command);
+        public override void Dispatch(ICommand command, Diagnostics diagnosticFlags = Diagnostics.None)
+        {
+            m_LastCommand = command;
+
+            base.Dispatch(command, diagnosticFlags);
+
+            PostCommandHandling(m_LastCommand);
+            m_LastCommand = null;
+        }
+
+        void PostCommandHandling(ICommand command)
+        {
+            switch (command)
+            {
+                case LoadGraphCommand:
+                        OnGraphLoaded(shaderGraphModel);
+                        break;
+                    case UndoRedoCommand:
+                        OnUndoRedo(shaderGraphModel);
+                        break;
+            }
         }
     }
 }

@@ -174,7 +174,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         public override IReadOnlyCollection<IGraphElementModel> DeleteEdges(IReadOnlyCollection<IEdgeModel> edgeModels)
         {
-            using var graphModelStateUpdater = graphModelStateComponent.UpdateScope;
+            using(var graphModelStateUpdater = CreateGraphModelStateUpdater())
             {
                 foreach (var model in edgeModels)
                 {
@@ -216,34 +216,47 @@ namespace UnityEditor.ShaderGraph.GraphUI
             }
 
             List<IGraphElementModel> deletedModels;
-            using var graphModelStateUpdater = graphModelStateComponent.UpdateScope;
+            using (var graphModelStateUpdater = CreateGraphModelStateUpdater())
+            using (var selectionStateUpdater = CreateSelectionStateUpdater())
             {
                 // Partition out redirect nodes because they get special delete behavior.
                 deletedModels = HandleRedirectNodesDeletion(graphModelStateUpdater, redirects);
-            }
 
-            // Delete everything else as usual.
-            deletedModels.AddRange(base.DeleteNodes(nonRedirects, false));
+                // Delete everything else as usual.
+                deletedModels.AddRange(base.DeleteNodes(nonRedirects, false));
 
-            using var selectionStateUpdater = selectionStateComponent.UpdateScope;
-            {
                 var selectedModels = deletedModels.Where(m => selectionStateComponent.IsSelected(m)).ToList();
                 if (selectedModels.Any())
                 {
                     // Deselect any now-deleted models that were selected
                     selectionStateUpdater.SelectElements(selectedModels, false);
                 }
-            }
 
-            // After all redirect nodes handling and deletion has been handled above
-            // Mark the nodes for deletion (actual CLDS node removal happens in GraphModelStateObserver)
-            foreach (var model in deletedModels)
-            {
-                graphModelStateUpdater.MarkDeleted(model);
+                // After all redirect nodes handling and deletion has been handled above
+                // Mark the nodes for deletion (actual CLDS node removal happens in GraphModelStateObserver)
+                foreach (var model in deletedModels)
+                {
+                    graphModelStateUpdater.MarkDeleted(model);
+                }
             }
 
             return deletedModels;
         }
+
+        GraphModelStateComponent.StateUpdater CreateGraphModelStateUpdater()
+        {
+            var newStateUpdater = new GraphModelStateComponent.StateUpdater();
+            newStateUpdater.Initialize(graphModelStateComponent);
+            return newStateUpdater;
+        }
+
+        SelectionStateComponent.StateUpdater CreateSelectionStateUpdater()
+        {
+            var newStateUpdater = new SelectionStateComponent.StateUpdater();
+            newStateUpdater.Initialize(selectionStateComponent);
+            return newStateUpdater;
+        }
+
 
         List<IGraphElementModel> HandleRedirectNodesDeletion(
             GraphModelStateComponent.StateUpdater graphModelStateUpdater,

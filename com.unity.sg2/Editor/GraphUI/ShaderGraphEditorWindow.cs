@@ -11,27 +11,16 @@ namespace UnityEditor.ShaderGraph.GraphUI
 {
     public class ShaderGraphEditorWindow : GraphViewEditorWindow
     {
-        protected PreviewManager m_PreviewManager;
-
         internal IGraphAsset Asset => GraphTool.ToolState.CurrentGraph.GetGraphAsset();
-
-        protected GraphModelStateObserver m_GraphModelStateObserver;
-
-        MainPreviewView m_MainPreviewView;
-
-        // We setup a reference to the MainPreview when the overlay containing it is created
-        // We do this because the resources needed to initialize the preview are not available at overlay creation time
-        internal void SetMainPreviewReference(MainPreviewView mainPreviewView)
-        {
-            m_MainPreviewView = mainPreviewView;
-        }
 
         // This Flag gets set when the editor window is closed with the graph still in a dirty state,
         // letting various sub-systems and the user know on window re-open that the graph is still dirty
-        bool m_WasWindowCloseCancelledInDirtyState;
+        bool m_WasWindowClosedInDirtyState;
 
         // This flag gets set by tests to close the editor window directly without prompts to save the dirty asset
         internal bool shouldCloseWindowNoPrompt = false;
+
+        ShaderGraphGraphTool m_ShaderGraphTool;
 
         [InitializeOnLoadMethod]
         static void RegisterTool()
@@ -59,10 +48,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
         {
             base.OnEnable();
 
-            // Needed to ensure to that on domain reload we go through and actually reinitialize stuff as this flag remains true when reload happens
-            // TODO (Sai): Figure out a better place for command handler registration and preview manager initialization
-            m_PreviewManager.IsInitialized = false;
-
             // Needed to ensure that graph view takes up full window when overlay canvas is present
             rootVisualElement.style.position = new StyleEnum<Position>(Position.Absolute);
             rootVisualElement.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
@@ -88,7 +73,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 shaderGraphEditorWindow.Focus();
                 shaderGraphEditorWindow.SetCurrentSelection(Asset, OpenMode.OpenAndFocus);
                 // Set this flag in order to let anything that would clear the dirty state know that graph is still dirty
-                shaderGraphEditorWindow.m_WasWindowCloseCancelledInDirtyState = true;
+                shaderGraphEditorWindow.m_WasWindowClosedInDirtyState = true;
             }
 
             base.OnDisable();
@@ -188,17 +173,15 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         protected override BaseGraphTool CreateGraphTool()
         {
-            var graphTool = CsoTool.Create<ShaderGraphGraphTool>(WindowID);
-            return graphTool;
+            m_ShaderGraphTool = CsoTool.Create<ShaderGraphGraphTool>(WindowID);
+            m_ShaderGraphTool.InitTool(m_WasWindowClosedInDirtyState);
+            return m_ShaderGraphTool;
         }
 
         protected override GraphView CreateGraphView()
         {
             GraphTool.Preferences.SetInitialSearcherSize(SearcherService.Usage.CreateNode, new Vector2(425, 100), 2.0f);
-
             var shaderGraphView = new ShaderGraphView(this, GraphTool, GraphTool.Name);
-            m_PreviewManager = new PreviewManager(shaderGraphView.GraphViewModel.GraphModelState);
-
             return shaderGraphView;
         }
 
@@ -216,26 +199,9 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
         protected override void Update()
         {
-            if (Asset == null)
-                return;
-
             base.Update();
 
-            if (m_PreviewManager is { IsInitialized: false })
-            {
-                m_PreviewManager.Initialize(GraphTool.ToolState.GraphModel as ShaderGraphModel, m_MainPreviewView, m_WasWindowCloseCancelledInDirtyState);
-                var shaderGraphModel = GraphTool.ToolState.GraphModel as ShaderGraphModel;
-                shaderGraphModel.graphModelStateComponent = GraphView.GraphViewModel.GraphModelState;
-                shaderGraphModel.selectionStateComponent = GraphView.GraphViewModel.SelectionState;
-
-                // Create the Graph Model State Observer and register it
-                m_GraphModelStateObserver = new GraphModelStateObserver(GraphView.GraphViewModel.GraphModelState, m_PreviewManager, shaderGraphModel.GraphHandler);
-                GraphTool.ObserverManager.RegisterObserver(m_GraphModelStateObserver);
-
-                ShaderGraphCommandsRegistrar.RegisterCommandHandlers(GraphTool, GraphView, GraphView.GraphViewModel, m_PreviewManager, shaderGraphModel, GraphTool.Dispatcher);
-            }
-
-            m_PreviewManager?.Update();
+            m_ShaderGraphTool.UpdateTool();
         }
     }
 }

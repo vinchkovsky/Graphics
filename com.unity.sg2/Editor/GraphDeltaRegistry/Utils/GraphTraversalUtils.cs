@@ -4,21 +4,8 @@ using System.Linq;
 
 namespace UnityEditor.ShaderGraph.Utils
 {
-    public enum PropagationDirection
-    {
-        Upstream,
-        Downstream
-    }
-
     public static class GraphTraversalUtils
     {
-        public static IEnumerable<NodeHandler> TraverseGraphFromNode(GraphHandler activeGraph, NodeHandler startingNode, PropagationDirection directionToTraverse)
-        {
-            var traversedNodes = new List<NodeHandler>();
-            return traversedNodes;
-        }
-
-
         public static IEnumerable<NodeHandler> GetUpstreamNodes(NodeHandler startingNode)
         {
             foreach (var inputPort in startingNode.GetPorts().Where(e => e.IsInput))
