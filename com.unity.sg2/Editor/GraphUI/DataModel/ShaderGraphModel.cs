@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Profiling;
 using UnityEditor.GraphToolsFoundation.Overdrive;
 using UnityEditor.GraphToolsFoundation.Overdrive.BasicModel;
+using UnityEditor.GraphToolsFoundation.Overdrive.InternalModels;
 using UnityEditor.ShaderGraph.GraphDelta;
 using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
@@ -117,7 +118,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         {
             IPortModel resolvedEdgeSource = null;
             List<IPortModel> resolvedEdgeDestinations = null;
-            using var graphModelStateUpdater = graphModelStateComponent.UpdateScope;
+            using var graphModelStateUpdater = CreateGraphModelStateUpdater();
             {
                 resolvedEdgeSource = HandleRedirectNodesCreation(graphModelStateUpdater, toPort, fromPort, out resolvedEdgeDestinations);
             }
@@ -172,13 +173,18 @@ namespace UnityEditor.ShaderGraph.GraphUI
             return base.DuplicateEdge(sourceEdge, targetInputNode, targetOutputNode);
         }
 
+        bool IsDropEdge(IPortModel portModel)
+        {
+            return portModel.GetConnectedEdges().Any(e => (e is IGhostEdge));
+        }
+
         public override IReadOnlyCollection<IGraphElementModel> DeleteEdges(IReadOnlyCollection<IEdgeModel> edgeModels)
         {
             using(var graphModelStateUpdater = CreateGraphModelStateUpdater())
             {
                 foreach (var model in edgeModels)
                 {
-                    if (!model.IsDeletable())
+                    if (!model.IsDeletable() || IsDropEdge(model.FromPort) || IsDropEdge(model.ToPort))
                         continue;
 
                     // Reset types on disconnected redirect nodes.
@@ -194,7 +200,8 @@ namespace UnityEditor.ShaderGraph.GraphUI
                     GraphHandler.RemoveEdge(model.FromPortId, model.ToPortId);
                 }
             }
-            return edgeModels;
+
+            return base.DeleteEdges(edgeModels);
         }
 
         public override IReadOnlyCollection<IGraphElementModel> DeleteNodes(IReadOnlyCollection<INodeModel> nodeModels, bool deleteConnections)
