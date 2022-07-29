@@ -20,14 +20,14 @@ namespace UnityEditor.ShaderGraph.GraphUI
             m_GraphTargets = activeTargets;
         }
 
-        static IList<Target> GetTargets()
+        public static IList<Target> GetTargets()
         {
             var targetTypes = TypeCache.GetTypesDerivedFrom<Target>();
             var targetList = new List<Target>();
             foreach (var type in targetTypes)
             {
-                if (type.IsAbstract || type.IsGenericType || !type.IsClass || type.Name != "UniversalTarget")
-                    continue;
+                //if (type.IsAbstract || type.IsGenericType || !type.IsClass || type.Name != "UniversalTarget")
+                //    continue;
 
                 var target = (Target)Activator.CreateInstance(type);
                 if (!target.isHidden)
@@ -43,8 +43,8 @@ namespace UnityEditor.ShaderGraph.GraphUI
             var targetDisplayNames = new List<object>();
             foreach (var type in targetTypes)
             {
-                if (type.IsAbstract || type.IsGenericType || !type.IsClass || type.Name != "UniversalTarget")
-                    continue;
+                //if (type.IsAbstract || type.IsGenericType || !type.IsClass || type.Name != "UniversalTarget")
+                //    continue;
 
                 var target = (Target)Activator.CreateInstance(type);
                 if (!target.isHidden)
@@ -69,16 +69,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
                     BuildFields();
                 }
             }
-
-            /*if (targetObject is Target target)
-            {
-                m_GraphTargets.Add(target);
-                m_OwnerElement.RootView.Dispatch(new ChangeActiveTargetsCommand());
-                m_TargetListPropertyField.listView.itemsSource = m_GraphTargets;
-                m_TargetListPropertyField.listView.Rebuild();
-
-                BuildFields();
-            }*/
         }
 
         static string GetTargetDisplayName(object targetObject)
@@ -89,22 +79,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 return jsonData.value.displayName;
 
             return targetObject as String;
-        }
-
-        void OnTargetSelectionChanged(IEnumerable<object> selectedObjects)
-        {
-            // The UI-Toolkit ListView directly adds a null element to the list, when the '+' button is hit
-            // Even if we click away from the dropdown menu, that null item will still exist in the list
-            // So we scan for any null items and make sure to remove them and rebuild the list view
-            for (var i = 0; i < m_GraphTargets.Count; ++i)
-            {
-                var target = m_GraphTargets[i];
-                if (target.value == null)
-                    m_GraphTargets.RemoveAt(i);
-            }
-
-            m_TargetListPropertyField.listView.itemsSource = m_GraphTargets;
-            m_TargetListPropertyField.listView.Rebuild();
         }
 
         void OnTargetRemoved()
@@ -130,7 +104,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         {
             var propertyFieldList = new List<BaseModelPropertyField>();
 
-            var labelField = new LabelPropertyField("Active Targets", m_OwnerElement.RootView);
+            var labelField = new LabelPropertyField("Graph Targets", m_OwnerElement.RootView);
             propertyFieldList.Add(labelField);
 
             m_TargetListPropertyField =
@@ -140,7 +114,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 GetTargetDisplayNames,
                 GetTargetDisplayName,
                 TargetAddedCallback,
-                OnTargetSelectionChanged,
                 OnTargetRemoved,
                 true,
                 true) { name = "sg-active-targets-list" };

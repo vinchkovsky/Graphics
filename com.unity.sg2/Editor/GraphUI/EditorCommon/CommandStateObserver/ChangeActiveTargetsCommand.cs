@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.GraphToolsFoundation.Overdrive;
 using UnityEngine;
 using UnityEngine.GraphToolsFoundation.CommandStateObserver;
@@ -7,13 +8,16 @@ namespace UnityEditor.ShaderGraph.GraphUI
 {
     class ChangeActiveTargetsCommand : UndoableCommand
     {
-        public ChangeActiveTargetsCommand()
+        Target m_ActiveTarget;
+        public ChangeActiveTargetsCommand(Target activeTarget)
         {
+            m_ActiveTarget = activeTarget;
         }
 
         public static void DefaultCommandHandler(
             UndoStateComponent undoState,
             GraphModelStateComponent graphModelState,
+            PreviewManager previewManager,
             ChangeActiveTargetsCommand command)
         {
             using (var undoStateUpdater = undoState.UpdateScope)
@@ -34,13 +38,13 @@ namespace UnityEditor.ShaderGraph.GraphUI
                         // TODO: How to get template name and CustomizationPoint name from target?
                         shaderGraphModel.GraphHandler.RebuildContextData(nodeModel.graphDataName, target.value, "UniversalPipeline", "SurfaceDescription", true);
                         nodeModel.DefineNode();
-
-                        // TODO (Sai) Update previews when contexts change.
                     }
                 }
             }
 
             // TODO: Consequences of adding a target: Discovering any new context node ports, validating all nodes on the graph etc.
+
+            previewManager.OnActiveTargetChanged(command.m_ActiveTarget);
         }
     }
 }

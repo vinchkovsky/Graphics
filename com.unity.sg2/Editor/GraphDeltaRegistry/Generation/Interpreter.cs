@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.ShaderFoundry;
+using UnityEditor.ShaderGraph.Configuration;
 using UnityEditor.ShaderGraph.GraphDelta;
 using static UnityEditor.ShaderGraph.GraphDelta.ContextEntryEnumTags;
 
@@ -89,12 +90,15 @@ namespace UnityEditor.ShaderGraph.Generation
         }
 
 
-        public static string GetShaderForNode(NodeHandler node, GraphHandler graph, Registry registry, out List<(string, UnityEngine.Texture)> defaultTextures)
+        public static string GetShaderForNode(NodeHandler node, GraphHandler graph, Registry registry, out List<(string, UnityEngine.Texture)> defaultTextures, ITargetProvider graphTarget = null)
         {
             List<(string, UnityEngine.Texture)> defaults = new();
+
+            var activeTarget = graphTarget as Target;
+
             void lambda(ShaderContainer container, CustomizationPoint vertex, CustomizationPoint fragment, out CustomizationPointInstance vertexCPDesc, out CustomizationPointInstance fragmentCPDesc)
                 => GetBlocks(container, vertex, fragment, node, graph, registry, ref defaults, out vertexCPDesc, out fragmentCPDesc);
-            var shader = SimpleSampleBuilder.Build(new ShaderContainer(), SimpleSampleBuilder.GetTarget(), "Test", lambda, String.Empty);
+            var shader = SimpleSampleBuilder.Build(new ShaderContainer(), activeTarget ?? SimpleSampleBuilder.GetTarget(), "Test", lambda, String.Empty);
 
             defaultTextures = new();
             defaultTextures.AddRange(defaults);
@@ -466,7 +470,7 @@ namespace UnityEditor.ShaderGraph.Generation
             List<ShaderFoundry.IncludeDescriptor> localIncludes = new();
             var func = nodeBuilder.GetShaderFunction(node, container, registry, out var dependencies);
 
-            
+
             string arguments = "";
             foreach (var param in func.Parameters)
             {

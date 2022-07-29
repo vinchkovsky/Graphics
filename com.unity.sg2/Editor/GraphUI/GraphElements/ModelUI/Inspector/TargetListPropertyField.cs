@@ -46,15 +46,14 @@ namespace UnityEditor.ShaderGraph.GraphUI
             Func<IList<object>> getAddItemData,
             Func<object, string> getAddItemMenuString,
             GenericMenu.MenuFunction2 onAddItemClicked,
-            Action<IEnumerable<object>> onSelectionChanged,
             Action onItemRemoved,
             bool makeOptionsUnique,
             bool makeListReorderable)
             : base(
                 commandTarget,
                 (IList) listItems,
-                makeItem: () => new Label(),
-                bindItem: (e, i) => ((Label)e).text = listItems.Count == 0 ? "Empty" : getAddItemMenuString(listItems[i]))
+                makeItem: () => new TargetLabelPropertyField(commandTarget),
+                bindItem: (e, i) => ((TargetLabelPropertyField)e).text = listItems.Count == 0 ? "Empty" : getAddItemMenuString(listItems[i]))
         {
             m_ListItems = listItems;
 
@@ -64,7 +63,6 @@ namespace UnityEditor.ShaderGraph.GraphUI
                 listView.reorderMode = ListViewReorderMode.Animated;
             }
 
-            listView.selectionChanged += onSelectionChanged;
             listView.itemsAdded += OnItemsAdded;
             listView.itemsRemoved += OnItemsRemoved;
 

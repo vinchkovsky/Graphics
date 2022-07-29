@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.GraphToolsFoundation.Overdrive;
+using UnityEditor.ShaderGraph.Generation;
 using UnityEditor.ShaderGraph.GraphDelta;
 using UnityEngine.GraphToolsFoundation.Overdrive;
 using UnityEngine;
@@ -78,6 +79,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
 
             m_PreviewHandlerInstance.SetActiveGraph(m_GraphModel.GraphHandler);
             m_PreviewHandlerInstance.SetActiveRegistry(m_GraphModel.RegistryInstance.Registry);
+            m_PreviewHandlerInstance.SetActiveTarget(m_GraphModel.Targets.FirstOrDefault());
 
             // Initialize preview data for any nodes that exist on graph load
             foreach (var nodeModel in m_GraphModel.NodeModels)
@@ -196,6 +198,19 @@ namespace UnityEditor.ShaderGraph.GraphUI
             return cachedMainPreviewTexture;
         }
 
+        // When active target is changed, we need to re-generate and re-render everything
+        internal void OnActiveTargetChanged(Target newActiveTarget)
+        {
+            m_PreviewHandlerInstance.SetActiveTarget(newActiveTarget);
+            OnTargetSettingsChanged();
+        }
+
+        // When target settings are changed, we need to re-generate and re-render everything
+        internal void OnTargetSettingsChanged()
+        {
+            foreach (var (nodeName, nodeGuid) in m_NodeLookupTable)
+                OnNodeFlowChanged(nodeName);
+        }
 
         /// <summary>
         /// This can be called when the main preview's mesh, zoom, rotation etc. changes and a re-render is required
