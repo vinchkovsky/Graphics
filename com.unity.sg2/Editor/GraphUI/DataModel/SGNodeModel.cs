@@ -378,7 +378,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         public void HandlePreviewTextureUpdated(Texture newPreviewTexture)
         {
             OnPreviewTextureUpdated(newPreviewTexture);
-            CurrentVersion++;
+            PreviewVersion++;
         }
 
         public void HandlePreviewShaderErrors(ShaderMessage[] shaderMessages)
@@ -387,7 +387,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
             throw new NotImplementedException();
         }
 
-        public int CurrentVersion { get; private set; }
+        public int PreviewVersion { get; private set; }
 
         public string ListenerID => m_GraphDataName;
     }

@@ -34,7 +34,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         }
 
         public Texture PreviewTexture { get; private set; }
-        public int CurrentVersion { get; private set; }
+        public int PreviewVersion { get; private set; }
         public string ListenerID => m_GraphDataName;
 
         public SGContextNodeModel()
@@ -111,7 +111,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
         public void HandlePreviewTextureUpdated(Texture newPreviewTexture)
         {
             PreviewTexture = newPreviewTexture;
-            CurrentVersion++;
+            PreviewVersion++;
         }
 
         public void HandlePreviewShaderErrors(ShaderMessage[] shaderMessages)

@@ -114,7 +114,7 @@ namespace UnityEditor.ShaderGraph.GraphUI
             var changedListeners = new List<IPreviewUpdateListener>();
             foreach (var (listenerID, listener) in m_PreviewUpdateListeners)
             {
-                if (listener.CurrentVersion != GetListenerVersion(listenerID))
+                if (listener.PreviewVersion != GetListenerVersion(listenerID))
                 {
                     changedListeners.Add(listener);
                 }
