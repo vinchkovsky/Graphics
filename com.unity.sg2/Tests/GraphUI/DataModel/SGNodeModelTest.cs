@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using Unity.GraphToolsFoundation.Editor;
+using UnityEditor.ShaderGraph.Defs;
 using UnityEditor.ShaderGraph.GraphDelta;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace UnityEditor.ShaderGraph.GraphUI.UnitTests.DataModel
@@ -97,6 +99,44 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests.DataModel
         {
             var nodeModel = MakeUnboundNode();
             Assert.AreEqual(default(RegistryKey), nodeModel.registryKey);
+        }
+
+        [Test]
+        public void TestChangeNodeFunction_NodeOnGraph_WithFunctionField_UpdatesFunctionField()
+        {
+            var (nodeHandler, nodeModel) = MakeNode();
+            nodeHandler.AddField(NodeDescriptorNodeBuilder.SELECTED_FUNCTION_FIELD_NAME, "DefaultFunction", true);
+
+            const string newFunction = "OtherFunction";
+            nodeModel.ChangeNodeFunction(newFunction);
+            Assert.AreEqual(newFunction, nodeHandler.GetField<string>(NodeDescriptorNodeBuilder.SELECTED_FUNCTION_FIELD_NAME).GetData());
+        }
+
+        [Test]
+        public void TestChangeNodeFunction_NodeOnGraph_WithoutFunctionField_LogsError()
+        {
+            var (nodeHandler, nodeModel) = MakeNode();
+            Assert.IsNull(nodeHandler.GetField(NodeDescriptorNodeBuilder.SELECTED_FUNCTION_FIELD_NAME));
+
+            nodeModel.ChangeNodeFunction("NotValid");
+            LogAssert.Expect(LogType.Error, "Unable to update selected function. Node has no selected function field.");
+            Assert.IsNull(nodeHandler.GetField(NodeDescriptorNodeBuilder.SELECTED_FUNCTION_FIELD_NAME));
+        }
+
+        [Test]
+        public void TestChangeNodeFunction_NodeInSearcher_LogsError()
+        {
+            var nodeModel = MakeOrphanNode();
+            nodeModel.ChangeNodeFunction("NotValid");
+            LogAssert.Expect(LogType.Error, "Attempted to change the function of a node that doesn't exist on the graph.");
+        }
+
+        [Test]
+        public void TestChangeNodeFunction_MissingNode_LogsError()
+        {
+            var nodeModel = MakeUnboundNode();
+            nodeModel.ChangeNodeFunction("NotValid");
+            LogAssert.Expect(LogType.Error, "Attempted to change the function of a node that doesn't exist on the graph.");
         }
     }
 }
