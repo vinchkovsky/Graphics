@@ -7,16 +7,18 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests.DataModel
 {
     class SGNodeModelTest : BaseGraphAssetTest
     {
+        static readonly RegistryKey k_TestKey = new() {Name = "Add", Version = 1};
+
         (NodeHandler, SGNodeModel) MakeNode()
         {
-            var nodeHandler = GraphModel.GraphHandler.AddNode(new RegistryKey {Name = "Add", Version = 1}, "Test");
+            var nodeHandler = GraphModel.GraphHandler.AddNode(k_TestKey, "Test");
             var node = GraphModel.CreateNode<SGNodeModel>("Test", initializationCallback: nm => nm.graphDataName = "Test");
             return (nodeHandler, node);
         }
 
-        SGNodeModel MakeOrphanNode()
+        SGNodeModel MakeOrphanNode(RegistryKey? key = null)
         {
-            return GraphModel.CreateNode<SGNodeModel>("Test", spawnFlags: SpawnFlags.Orphan, initializationCallback: nm => nm.SetSearcherPreviewRegistryKey(new RegistryKey { Name = "Add", Version = 1 }));
+            return GraphModel.CreateNode<SGNodeModel>("Test", spawnFlags: SpawnFlags.Orphan, initializationCallback: nm => nm.SetSearcherPreviewRegistryKey(key ?? k_TestKey));
         }
 
         SGNodeModel MakeUnboundNode()
@@ -74,6 +76,27 @@ namespace UnityEditor.ShaderGraph.GraphUI.UnitTests.DataModel
         {
             var nodeModel = MakeUnboundNode();
             Assert.IsFalse(nodeModel.existsInGraphData);
+        }
+
+        [Test]
+        public void TestGetRegistryKey_NodeOnGraph_MatchesHandler()
+        {
+            var (nodeHandler, nodeModel) = MakeNode();
+            Assert.AreEqual(nodeHandler.GetRegistryKey(), nodeModel.registryKey);
+        }
+
+        [Test]
+        public void TestGetRegistryKey_NodeInSearcher_IsPreviewKey()
+        {
+            var nodeModel = MakeOrphanNode(k_TestKey);
+            Assert.AreEqual(k_TestKey, nodeModel.registryKey);
+        }
+
+        [Test]
+        public void TestGetRegistryKey_MissingNode_IsEmptyKey()
+        {
+            var nodeModel = MakeUnboundNode();
+            Assert.AreEqual(default(RegistryKey), nodeModel.registryKey);
         }
     }
 }
