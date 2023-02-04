@@ -63,25 +63,25 @@ namespace UnityEngine.Rendering.Universal
         /// The distance to the point of focus.
         /// </summary>
         [Tooltip("The distance to the point of focus.")]
-        public MinFloatParameter focusDistance = new MinFloatParameter(10f, 0.1f);
+        public MinFloatParameter focusDistance = new MinFloatParameter(10f, 0.00001f);
 
         /// <summary>
         /// The ratio of aperture (known as f-stop or f-number). The smaller the value is, the shallower the depth of field is.
         /// </summary>
         [Tooltip("The ratio of aperture (known as f-stop or f-number). The smaller the value is, the shallower the depth of field is.")]
-        public ClampedFloatParameter aperture = new ClampedFloatParameter(5.6f, 1f, 32f);
+        public ClampedFloatParameter aperture = new ClampedFloatParameter(5.6f, 0.00001f, 3000000f);
 
         /// <summary>
         /// The distance between the lens and the film. The larger the value is, the shallower the depth of field is.
         /// </summary>
         [Tooltip("The distance between the lens and the film. The larger the value is, the shallower the depth of field is.")]
-        public ClampedFloatParameter focalLength = new ClampedFloatParameter(50f, 1f, 300f);
+        public ClampedFloatParameter focalLength = new ClampedFloatParameter(50f, 0.00001f, 3000000f);
 
         /// <summary>
         /// The number of aperture blades.
         /// </summary>
         [Tooltip("The number of aperture blades.")]
-        public ClampedIntParameter bladeCount = new ClampedIntParameter(5, 3, 9);
+        public ClampedIntParameter bladeCount = new ClampedIntParameter(5, 1, 999);
 
         /// <summary>
         /// The curvature of aperture blades. The smaller the value is, the more visible aperture blades are. A value of 1 will make the bokeh perfectly circular.

@@ -414,8 +414,11 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void OnDisable()
         {
-            m_GraphEditorView.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
-            m_GraphEditorView?.Dispose();
+            if (this.graphEditorView != null)
+            {
+                m_GraphEditorView?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+                m_GraphEditorView?.Dispose();
+            }
             messageManager.ClearAll();
 
             m_GraphEditorView = null;

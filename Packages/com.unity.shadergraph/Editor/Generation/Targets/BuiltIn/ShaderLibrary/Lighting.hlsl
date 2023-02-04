@@ -522,11 +522,11 @@ SAMPLER(sampler_ScreenSpaceOcclusionTexture);
 
 struct AmbientOcclusionFactor
 {
-    half indirectAmbientOcclusion;
-    half directAmbientOcclusion;
+    float indirectAmbientOcclusion;
+    float directAmbientOcclusion;
 };
 
-half2 SampleAmbientOcclusion(float2 normalizedScreenSpaceUV)
+float2 SampleAmbientOcclusion(float2 normalizedScreenSpaceUV)
 {
     float2 uv = UnityStereoTransformScreenSpaceTex(normalizedScreenSpaceUV);
     return SAMPLE_TEXTURE2D_X(_ScreenSpaceOcclusionTexture, sampler_ScreenSpaceOcclusionTexture, uv);
@@ -536,8 +536,8 @@ AmbientOcclusionFactor GetScreenSpaceAmbientOcclusion(float2 normalizedScreenSpa
 {
     AmbientOcclusionFactor aoFactor;
     float2 ssao = SampleAmbientOcclusion(normalizedScreenSpaceUV);
-    aoFactor.indirectAmbientOcclusion = lerp(half(1.0), ssao.x, _AmbientOcclusionParam.z);
-    aoFactor.directAmbientOcclusion = lerp(half(1.0), ssao.y, _AmbientOcclusionParam.w);
+    aoFactor.indirectAmbientOcclusion = clamp(lerp(float(1.0), ssao.x, _AmbientOcclusionParam.z), 0, 1);
+    aoFactor.directAmbientOcclusion = clamp(lerp(float(1.0), ssao.y, _AmbientOcclusionParam.w), 0, 1);
     return aoFactor;
 }
 
