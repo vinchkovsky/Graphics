@@ -90,9 +90,13 @@ FragmentOutput frag(PackedVaryings packedInput)
     #ifdef _SPECULAR_SETUP
         float3 specular = surfaceDescription.Specular;
         float metallic = 1;
+        float3 specular2 = surfaceDescription.Specular2;
+        float metallic2 = 1;
     #else
         float3 specular = 0;
         float metallic = surfaceDescription.Metallic;
+        float3 specular2 = 0;
+        float metallic2 = surfaceDescription.Metallic2;
     #endif
 
 #ifdef _DBUFFER
@@ -108,7 +112,7 @@ FragmentOutput frag(PackedVaryings packedInput)
     // in LitForwardPass GlobalIllumination (and temporarily LightingPhysicallyBased) are called inside UniversalFragmentPBR
     // in Deferred rendering we store the sum of these values (and of emission as well) in the GBuffer
     BRDFData brdfData;
-    InitializeBRDFData(surfaceDescription.BaseColor, metallic, specular, surfaceDescription.Smoothness, alpha, brdfData);
+    InitializeBRDFData(surfaceDescription.BaseColor, metallic, metallic2, specular, specular2, surfaceDescription.Smoothness, surfaceDescription.Smoothness2, alpha, brdfData);
 
     Light mainLight = GetMainLight(inputData.shadowCoord, inputData.positionWS, inputData.shadowMask);
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI, inputData.shadowMask);

@@ -116,9 +116,15 @@ void InitializeInputData(Varyings input, float3 positionWS, half3 normalWS, half
 void GetSurface(DecalSurfaceData decalSurfaceData, inout SurfaceData surfaceData)
 {
     surfaceData.albedo = decalSurfaceData.baseColor.rgb;
+
     surfaceData.metallic = saturate(decalSurfaceData.metallic);
     surfaceData.specular = 0;
     surfaceData.smoothness = saturate(decalSurfaceData.smoothness);
+
+    surfaceData.metallic2 = saturate(decalSurfaceData.metallic);
+    surfaceData.specular2 = 0;
+    surfaceData.smoothness2 = saturate(decalSurfaceData.smoothness);
+
     surfaceData.occlusion = decalSurfaceData.occlusion;
     surfaceData.emission = decalSurfaceData.emissive;
     surfaceData.alpha = saturate(decalSurfaceData.baseColor.w);
@@ -324,7 +330,7 @@ void Frag(PackedVaryings packedInput,
     GetSurface(surfaceData, surface);
 
     BRDFData brdfData;
-    InitializeBRDFData(surface.albedo, surface.metallic, 0, surface.smoothness, surface.alpha, brdfData);
+    InitializeBRDFData(surface.albedo, surface.metallic, surface.metallic2, 0, 0, surface.smoothness, surface.smoothness2, surface.alpha, brdfData);
 
     // Skip GI if there is no abledo
 #ifdef _MATERIAL_AFFECTS_ALBEDO

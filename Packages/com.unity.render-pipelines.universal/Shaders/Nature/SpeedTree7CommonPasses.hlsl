@@ -194,10 +194,16 @@ half4 SpeedTree7Frag(SpeedTreeVertexOutput input) : SV_Target
     surfaceData.albedo = diffuseColor.rgb;
     surfaceData.alpha = diffuse.a;
     surfaceData.emission = half3(0, 0, 0);
-    surfaceData.metallic = 0;
     surfaceData.occlusion = 1;
+
+    surfaceData.metallic = 0;
     surfaceData.smoothness = 0;
     surfaceData.specular = half3(0, 0, 0);
+
+    surfaceData.metallic2 = 0;
+    surfaceData.smoothness2 = 0;
+    surfaceData.specular2 = half3(0, 0, 0);
+
     surfaceData.clearCoatMask = 0;
     surfaceData.clearCoatSmoothness = 1;
     surfaceData.normalTS = normalTs;

@@ -158,14 +158,18 @@ SurfaceData SurfaceDataFromGbuffer(half4 gbuffer0, half4 gbuffer1, half4 gbuffer
     uint materialFlags = UnpackMaterialFlags(gbuffer0.a);
     surfaceData.occlusion = 1.0; // Not used by SimpleLit material.
     surfaceData.specular = gbuffer1.rgb;
+    surfaceData.specular2 = gbuffer1.rgb;
     half smoothness = gbuffer2.a;
 
     surfaceData.metallic = 0.0; // Not used by SimpleLit material.
+    surfaceData.metallic2 = 0.0; // Not used by SimpleLit material.
     surfaceData.alpha = 1.0; // gbuffer only contains opaque materials
     surfaceData.smoothness = smoothness;
+    surfaceData.smoothness2 = smoothness;
 
     surfaceData.emission = (half3)0; // Note: this is not made available at lighting pass in this renderer - emission contribution is included (with GI) in the value GBuffer3.rgb, that is used as a renderTarget during lighting
     surfaceData.normalTS = (half3)0; // Note: does this normalTS member need to be in SurfaceData? It looks like an intermediate value
+    surfaceData.normalTS2 = (half3)0;
 
     return surfaceData;
 }
@@ -255,7 +259,7 @@ BRDFData BRDFDataFromGbuffer(half4 gbuffer0, half4 gbuffer1, half4 gbuffer2)
         brdfDiffuse = albedo * oneMinusReflectivity;
         brdfSpecular = lerp(kDieletricSpec.rgb, albedo, metallic);
     }
-    InitializeBRDFDataDirect(albedo, brdfDiffuse, brdfSpecular, reflectivity, oneMinusReflectivity, smoothness, alpha, brdfData);
+    InitializeBRDFDataDirect(albedo, brdfDiffuse, brdfDiffuse, brdfSpecular, brdfSpecular, reflectivity, reflectivity, oneMinusReflectivity, oneMinusReflectivity, smoothness, smoothness, alpha, brdfData);
 
     return brdfData;
 }

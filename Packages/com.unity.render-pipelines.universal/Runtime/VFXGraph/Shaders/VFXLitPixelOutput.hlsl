@@ -73,7 +73,7 @@ void VFXComputePixelOutputToGBuffer(const VFX_VARYING_PS_INPUTS i, const float3 
     VFXGetURPLitData(surfaceData, inputData, i, normalWS, uvData, (uint2)0);
 
     BRDFData brdfData;
-    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.specular, surfaceData.smoothness, surfaceData.alpha, brdfData);
+    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.metallic2, surfaceData.specular, surfaceData.specular2, surfaceData.smoothness, surfaceData.smoothness2, surfaceData.alpha, brdfData);
 
     half3 color = GlobalIllumination(brdfData, inputData.bakedGI, surfaceData.occlusion, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS);
     gBuffer = BRDFDataToGbuffer(brdfData, inputData, surfaceData.smoothness, surfaceData.emission + color, surfaceData.occlusion);
@@ -90,7 +90,7 @@ void VFXComputePixelOutputToGBufferShaderGraph(const VFX_VARYING_PS_INPUTS i, Su
     InputData inputData = VFXGetInputData(i, posInput, surfaceData, normalWS);
 
     BRDFData brdfData;
-    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.specular, surfaceData.smoothness, surfaceData.alpha, brdfData);
+    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.metallic2, surfaceData.specular, surfaceData.specular2, surfaceData.smoothness, surfaceData.smoothness2, surfaceData.alpha, brdfData);
 
     half3 color = GlobalIllumination(brdfData, inputData.bakedGI, surfaceData.occlusion, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS);
     gBuffer = BRDFDataToGbuffer(brdfData, inputData, surfaceData.smoothness, surfaceData.emission + color, surfaceData.occlusion);

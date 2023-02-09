@@ -59,9 +59,15 @@ inline void InitializeSimpleLitSurfaceData(float2 uv, out SurfaceData outSurface
     outSurfaceData.albedo = AlphaModulate(outSurfaceData.albedo, outSurfaceData.alpha);
 
     half4 specularSmoothness = SampleSpecularSmoothness(uv, outSurfaceData.alpha, _SpecColor, TEXTURE2D_ARGS(_SpecGlossMap, sampler_SpecGlossMap));
+
     outSurfaceData.metallic = 0.0; // unused
     outSurfaceData.specular = specularSmoothness.rgb;
     outSurfaceData.smoothness = specularSmoothness.a;
+
+    outSurfaceData.metallic2 = 0.0; // unused
+    outSurfaceData.specular2 = specularSmoothness.rgb;
+    outSurfaceData.smoothness2 = specularSmoothness.a;
+
     outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap));
     outSurfaceData.occlusion = 1.0;
     outSurfaceData.emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));

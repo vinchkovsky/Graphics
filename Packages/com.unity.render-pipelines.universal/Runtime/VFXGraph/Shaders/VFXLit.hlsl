@@ -109,6 +109,7 @@ SurfaceData VFXGetSurfaceData(const VFX_VARYING_PS_INPUTS i, float3 normalWS, co
     #endif
 
     surfaceData.normalTS = float3(1.0f, 0.0f, 0.0f); //NormalWS is directly modified in VFX
+    surfaceData.normalTS2 = float3(1.0f, 0.0f, 0.0f); //NormalWS is directly modified in VFX
 
     surfaceData.smoothness = 1.0f;
     #ifdef VFX_VARYING_SMOOTHNESS

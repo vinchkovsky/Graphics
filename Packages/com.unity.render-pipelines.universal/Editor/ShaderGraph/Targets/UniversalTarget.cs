@@ -1241,6 +1241,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         {
             BlockFields.SurfaceDescription.NormalOS,
             BlockFields.SurfaceDescription.NormalTS,
+            BlockFields.SurfaceDescription.NormalTS2,
             BlockFields.SurfaceDescription.NormalWS,
             BlockFields.SurfaceDescription.Alpha,
             BlockFields.SurfaceDescription.AlphaClipThreshold,

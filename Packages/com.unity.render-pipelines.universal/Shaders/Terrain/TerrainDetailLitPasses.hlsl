@@ -65,10 +65,16 @@ void InitializeSurfaceData(half3 albedo, half alpha, out SurfaceData surfaceData
     surfaceData.albedo = albedo;
     surfaceData.alpha = alpha;
     surfaceData.emission = half3(0, 0, 0);
-    surfaceData.metallic = 0;
     surfaceData.occlusion = 0;
+
+    surfaceData.metallic = 0;
     surfaceData.smoothness = 1;
     surfaceData.specular = half3(0, 0, 0);
+
+    surfaceData.metallic2 = 0;
+    surfaceData.smoothness2 = 1;
+    surfaceData.specular2 = half3(0, 0, 0);
+
     surfaceData.clearCoatMask = 0;
     surfaceData.clearCoatSmoothness = 1;
     surfaceData.normalTS = half3(0, 0, 1);

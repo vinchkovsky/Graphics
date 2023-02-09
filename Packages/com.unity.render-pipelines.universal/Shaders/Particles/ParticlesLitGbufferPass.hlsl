@@ -122,7 +122,7 @@ FragmentOutput ParticlesGBufferFragment(VaryingsParticle input)
     // in LitForwardPass GlobalIllumination (and temporarily LightingPhysicallyBased) are called inside UniversalFragmentPBR
     // in Deferred rendering we store the sum of these values (and of emission as well) in the GBuffer
     BRDFData brdfData;
-    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.specular, surfaceData.smoothness, surfaceData.alpha, brdfData);
+    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.metallic2, surfaceData.specular, surfaceData.specular2, surfaceData.smoothness, surfaceData.smoothness2, surfaceData.alpha, brdfData);
 
     Light mainLight = GetMainLight(inputData.shadowCoord, inputData.positionWS, inputData.shadowMask);
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI, inputData.shadowMask);

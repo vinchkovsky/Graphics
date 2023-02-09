@@ -19,8 +19,11 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 BlockFields.VertexDescription.Tangent,
                 BlockFields.SurfaceDescription.BaseColor,
                 BlockFields.SurfaceDescription.NormalTS,
+                BlockFields.SurfaceDescription.NormalTS2,
                 BlockFields.SurfaceDescription.Metallic,
+                BlockFields.SurfaceDescription.Metallic2,
                 BlockFields.SurfaceDescription.Smoothness,
+                BlockFields.SurfaceDescription.Smoothness2,
                 BlockFields.SurfaceDescription.Emission,
                 BlockFields.SurfaceDescription.Occlusion,
             };

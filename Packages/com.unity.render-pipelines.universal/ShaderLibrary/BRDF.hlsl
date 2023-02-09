@@ -12,17 +12,29 @@ struct BRDFData
 {
     half3 albedo;
     half3 diffuse;
+    half3 diffuse2;
     half3 specular;
+    half3 specular2;
     half reflectivity;
+    half reflectivity2;
     half perceptualRoughness;
+    half perceptualRoughness2;
+
     half roughness;
     half roughness2;
+
+    half roughness_2;
+    half roughness2_2;
+
     half grazingTerm;
+    half grazingTerm2;
 
     // We save some light invariant BRDF terms so we don't have to recompute
     // them in the light loop. Take a look at DirectBRDF function for detailed explaination.
     half normalizationTerm;     // roughness * 4.0 + 2.0
+    half normalizationTerm2;     // roughness * 4.0 + 2.0
     half roughness2MinusOne;    // roughness^2 - 1.0
+    half roughness2MinusOne2;    // roughness^2 - 1.0
 };
 
 half ReflectivitySpecular(half3 specular)
@@ -51,20 +63,34 @@ half MetallicFromReflectivity(half reflectivity)
     return (reflectivity - kDielectricSpec.r) / oneMinusDielectricSpec;
 }
 
-inline void InitializeBRDFDataDirect(half3 albedo, half3 diffuse, half3 specular, half reflectivity, half oneMinusReflectivity, half smoothness, inout half alpha, out BRDFData outBRDFData)
+inline void InitializeBRDFDataDirect(half3 albedo, half3 diffuse, half3 diffuse2, half3 specular, half3 specular2, half reflectivity, half reflectivity2, half oneMinusReflectivity, half oneMinusReflectivity2, half smoothness, half smoothness2, inout half alpha, out BRDFData outBRDFData)
 {
     outBRDFData = (BRDFData)0;
     outBRDFData.albedo = albedo;
     outBRDFData.diffuse = diffuse;
+    outBRDFData.diffuse2 = diffuse2;
     outBRDFData.specular = specular;
+    outBRDFData.specular2 = specular2;
     outBRDFData.reflectivity = reflectivity;
+    outBRDFData.reflectivity2 = reflectivity2;
 
     outBRDFData.perceptualRoughness = PerceptualSmoothnessToPerceptualRoughness(smoothness);
+    outBRDFData.perceptualRoughness2 = PerceptualSmoothnessToPerceptualRoughness(smoothness2);
+
     outBRDFData.roughness           = max(PerceptualRoughnessToRoughness(outBRDFData.perceptualRoughness), HALF_MIN_SQRT);
     outBRDFData.roughness2          = max(outBRDFData.roughness * outBRDFData.roughness, HALF_MIN);
+
+    outBRDFData.roughness_2 = max(PerceptualRoughnessToRoughness(outBRDFData.perceptualRoughness2), HALF_MIN_SQRT);
+    outBRDFData.roughness2_2 = max(outBRDFData.roughness_2 * outBRDFData.roughness_2, HALF_MIN);
+
     outBRDFData.grazingTerm         = saturate(smoothness + reflectivity);
+    outBRDFData.grazingTerm2 = saturate(smoothness2 + reflectivity2);
+
     outBRDFData.normalizationTerm   = outBRDFData.roughness * half(4.0) + half(2.0);
+    outBRDFData.normalizationTerm2 = outBRDFData.roughness2 * half(4.0) + half(2.0);
+
     outBRDFData.roughness2MinusOne  = outBRDFData.roughness2 - half(1.0);
+    outBRDFData.roughness2MinusOne2 = outBRDFData.roughness2_2 - half(1.0);
 
     // Input is expected to be non-alpha-premultiplied while ROP is set to pre-multiplied blend.
     // We use input color for specular, but (pre-)multiply the diffuse with alpha to complete the standard alpha blend equation.
@@ -77,32 +103,46 @@ inline void InitializeBRDFDataDirect(half3 albedo, half3 diffuse, half3 specular
 }
 
 // Legacy: do not call, will not correctly initialize albedo property.
-inline void InitializeBRDFDataDirect(half3 diffuse, half3 specular, half reflectivity, half oneMinusReflectivity, half smoothness, inout half alpha, out BRDFData outBRDFData)
+inline void InitializeBRDFDataDirect(half3 diffuse, half3 diffuse2, half3 specular, half3 specular2, half reflectivity, half reflectivity2, half oneMinusReflectivity, half oneMinusReflectivity2, half smoothness, half smoothness2, inout half alpha, out BRDFData outBRDFData)
 {
-    InitializeBRDFDataDirect(half3(0.0, 0.0, 0.0), diffuse, specular, reflectivity, oneMinusReflectivity, smoothness, alpha, outBRDFData);
+    InitializeBRDFDataDirect(half3(0.0, 0.0, 0.0), diffuse, diffuse2, specular, specular2, reflectivity, reflectivity2, oneMinusReflectivity, oneMinusReflectivity2, smoothness, smoothness2, alpha, outBRDFData);
 }
 
 // Initialize BRDFData for material, managing both specular and metallic setup using shader keyword _SPECULAR_SETUP.
-inline void InitializeBRDFData(half3 albedo, half metallic, half3 specular, half smoothness, inout half alpha, out BRDFData outBRDFData)
+inline void InitializeBRDFData(half3 albedo, half metallic, half metallic2, half3 specular, half3 specular2, half smoothness, half smoothness2, inout half alpha, out BRDFData outBRDFData)
 {
 #ifdef _SPECULAR_SETUP
     half reflectivity = ReflectivitySpecular(specular);
+    half reflectivity2 = ReflectivitySpecular(specular2);
+
     half oneMinusReflectivity = half(1.0) - reflectivity;
+    half oneMinusReflectivity2 = half(1.0) - reflectivity2;
+
     half3 brdfDiffuse = albedo * oneMinusReflectivity;
+    half3 brdfDiffuse2 = albedo * oneMinusReflectivity2;
+
     half3 brdfSpecular = specular;
+    half3 brdfSpecular2 = specular2;
 #else
     half oneMinusReflectivity = OneMinusReflectivityMetallic(metallic);
+    half oneMinusReflectivity2 = OneMinusReflectivityMetallic(metallic2);
+
     half reflectivity = half(1.0) - oneMinusReflectivity;
+    half reflectivity2 = half(1.0) - oneMinusReflectivity2;
+
     half3 brdfDiffuse = albedo * oneMinusReflectivity;
+    half3 brdfDiffuse2 = albedo * oneMinusReflectivity2;
+
     half3 brdfSpecular = lerp(kDieletricSpec.rgb, albedo, metallic);
+    half3 brdfSpecular2 = lerp(kDieletricSpec.rgb, albedo, metallic2);
 #endif
 
-    InitializeBRDFDataDirect(albedo, brdfDiffuse, brdfSpecular, reflectivity, oneMinusReflectivity, smoothness, alpha, outBRDFData);
+    InitializeBRDFDataDirect(albedo, brdfDiffuse, brdfDiffuse2, brdfSpecular, brdfSpecular2, reflectivity, reflectivity2, oneMinusReflectivity, oneMinusReflectivity2, smoothness, smoothness2, alpha, outBRDFData);
 }
 
 inline void InitializeBRDFData(inout SurfaceData surfaceData, out BRDFData brdfData)
 {
-    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.specular, surfaceData.smoothness, surfaceData.alpha, brdfData);
+    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.metallic2, surfaceData.specular, surfaceData.specular2, surfaceData.smoothness, surfaceData.smoothness2, surfaceData.alpha, brdfData);
 }
 
 half3 ConvertF0ForClearCoat15(half3 f0)
@@ -116,16 +156,30 @@ inline void InitializeBRDFDataClearCoat(half clearCoatMask, half clearCoatSmooth
     outBRDFData.albedo = half(1.0);
 
     // Calculate Roughness of Clear Coat layer
-    outBRDFData.diffuse             = kDielectricSpec.aaa; // 1 - kDielectricSpec
-    outBRDFData.specular            = kDielectricSpec.rgb;
-    outBRDFData.reflectivity        = kDielectricSpec.r;
+    outBRDFData.diffuse = kDielectricSpec.aaa; // 1 - kDielectricSpec
+    outBRDFData.diffuse2 = outBRDFData.diffuse; // 1 - kDielectricSpec
+    outBRDFData.specular = kDielectricSpec.rgb;
+    outBRDFData.specular2 = outBRDFData.specular;
+    outBRDFData.reflectivity = kDielectricSpec.r;
+    outBRDFData.reflectivity2 = outBRDFData.reflectivity;
 
     outBRDFData.perceptualRoughness = PerceptualSmoothnessToPerceptualRoughness(clearCoatSmoothness);
+    outBRDFData.perceptualRoughness2 = outBRDFData.perceptualRoughness;
+
     outBRDFData.roughness           = max(PerceptualRoughnessToRoughness(outBRDFData.perceptualRoughness), HALF_MIN_SQRT);
+    outBRDFData.roughness_2 = outBRDFData.roughness;
+
     outBRDFData.roughness2          = max(outBRDFData.roughness * outBRDFData.roughness, HALF_MIN);
+    outBRDFData.roughness2_2 = outBRDFData.roughness2;
+
     outBRDFData.normalizationTerm   = outBRDFData.roughness * half(4.0) + half(2.0);
+    outBRDFData.normalizationTerm2 = outBRDFData.normalizationTerm;
+
     outBRDFData.roughness2MinusOne  = outBRDFData.roughness2 - half(1.0);
+    outBRDFData.roughness2MinusOne2 = outBRDFData.roughness2MinusOne;
+
     outBRDFData.grazingTerm         = saturate(clearCoatSmoothness + kDielectricSpec.x);
+    outBRDFData.grazingTerm2 = outBRDFData.grazingTerm;
 
     // Modify Roughness of base layer using coat IOR
     half ieta                        = lerp(1.0h, CLEAR_COAT_IETA, clearCoatMask);
@@ -133,15 +187,24 @@ inline void InitializeBRDFDataClearCoat(half clearCoatMask, half clearCoatSmooth
     half sigma                       = RoughnessToVariance(PerceptualRoughnessToRoughness(baseBRDFData.perceptualRoughness));
 
     baseBRDFData.perceptualRoughness = RoughnessToPerceptualRoughness(VarianceToRoughness(sigma * coatRoughnessScale));
+    baseBRDFData.perceptualRoughness2 = baseBRDFData.perceptualRoughness;
 
     // Recompute base material for new roughness, previous computation should be eliminated by the compiler (as it's unused)
     baseBRDFData.roughness          = max(PerceptualRoughnessToRoughness(baseBRDFData.perceptualRoughness), HALF_MIN_SQRT);
+    baseBRDFData.roughness2 = baseBRDFData.roughness;
+
     baseBRDFData.roughness2         = max(baseBRDFData.roughness * baseBRDFData.roughness, HALF_MIN);
+    baseBRDFData.roughness2_2 = baseBRDFData.roughness2;
+
     baseBRDFData.normalizationTerm  = baseBRDFData.roughness * 4.0h + 2.0h;
+    baseBRDFData.normalizationTerm2 = baseBRDFData.normalizationTerm;
+
     baseBRDFData.roughness2MinusOne = baseBRDFData.roughness2 - 1.0h;
+    baseBRDFData.roughness2MinusOne2 = baseBRDFData.roughness2MinusOne;
 
     // Darken/saturate base layer using coat to surface reflectance (vs. air to surface)
     baseBRDFData.specular = lerp(baseBRDFData.specular, ConvertF0ForClearCoat15(baseBRDFData.specular), clearCoatMask);
+    baseBRDFData.specular2 = baseBRDFData.specular;
     // TODO: what about diffuse? at least in specular workflow diffuse should be recalculated as it directly depends on it.
 }
 

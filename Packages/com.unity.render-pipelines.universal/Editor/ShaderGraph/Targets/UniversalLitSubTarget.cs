@@ -135,6 +135,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             context.AddField(UniversalFields.NormalDropOffWS, normalDropOffSpace == NormalDropOffSpace.World);
             context.AddField(UniversalFields.Normal, descs.Contains(BlockFields.SurfaceDescription.NormalOS) ||
                 descs.Contains(BlockFields.SurfaceDescription.NormalTS) ||
+                descs.Contains(BlockFields.SurfaceDescription.NormalTS2) ||
                 descs.Contains(BlockFields.SurfaceDescription.NormalWS));
             // Complex Lit
 
@@ -145,8 +146,10 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         public override void GetActiveBlocks(ref TargetActiveBlockContext context)
         {
             context.AddBlock(BlockFields.SurfaceDescription.Smoothness);
+            context.AddBlock(BlockFields.SurfaceDescription.Smoothness2);
             context.AddBlock(BlockFields.SurfaceDescription.NormalOS, normalDropOffSpace == NormalDropOffSpace.Object);
             context.AddBlock(BlockFields.SurfaceDescription.NormalTS, normalDropOffSpace == NormalDropOffSpace.Tangent);
+            context.AddBlock(BlockFields.SurfaceDescription.NormalTS2, normalDropOffSpace == NormalDropOffSpace.Tangent);
             context.AddBlock(BlockFields.SurfaceDescription.NormalWS, normalDropOffSpace == NormalDropOffSpace.World);
             context.AddBlock(BlockFields.SurfaceDescription.Emission);
             context.AddBlock(BlockFields.SurfaceDescription.Occlusion);
@@ -154,7 +157,9 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             // when the surface options are material controlled, we must show all of these blocks
             // when target controlled, we can cull the unnecessary blocks
             context.AddBlock(BlockFields.SurfaceDescription.Specular, (workflowMode == WorkflowMode.Specular) || target.allowMaterialOverride);
+            context.AddBlock(BlockFields.SurfaceDescription.Specular2, (workflowMode == WorkflowMode.Specular) || target.allowMaterialOverride);
             context.AddBlock(BlockFields.SurfaceDescription.Metallic, (workflowMode == WorkflowMode.Metallic) || target.allowMaterialOverride);
+            context.AddBlock(BlockFields.SurfaceDescription.Metallic2, (workflowMode == WorkflowMode.Metallic) || target.allowMaterialOverride);
             context.AddBlock(BlockFields.SurfaceDescription.Alpha, (target.surfaceType == SurfaceType.Transparent || target.alphaClip) || target.allowMaterialOverride);
             context.AddBlock(BlockFields.SurfaceDescription.AlphaClipThreshold, (target.alphaClip) || target.allowMaterialOverride);
 
@@ -265,16 +270,20 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
 
             // Handle mapping of Normal block specifically
             BlockFieldDescriptor normalBlock;
+            BlockFieldDescriptor normalBlock2;
             switch (m_NormalDropOffSpace)
             {
                 case NormalDropOffSpace.Object:
                     normalBlock = BlockFields.SurfaceDescription.NormalOS;
+                    normalBlock2 = BlockFields.SurfaceDescription.NormalOS;
                     break;
                 case NormalDropOffSpace.World:
                     normalBlock = BlockFields.SurfaceDescription.NormalWS;
+                    normalBlock2 = BlockFields.SurfaceDescription.NormalWS;
                     break;
                 default:
                     normalBlock = BlockFields.SurfaceDescription.NormalTS;
+                    normalBlock2 = BlockFields.SurfaceDescription.NormalTS2;
                     break;
             }
 
@@ -286,8 +295,10 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 { BlockFields.VertexDescription.Tangent, 11 },
                 { BlockFields.SurfaceDescription.BaseColor, 0 },
                 { normalBlock, 1 },
+                { normalBlock, 14 },
                 { BlockFields.SurfaceDescription.Emission, 4 },
                 { BlockFields.SurfaceDescription.Smoothness, 5 },
+                { BlockFields.SurfaceDescription.Smoothness2, 13 },
                 { BlockFields.SurfaceDescription.Occlusion, 6 },
                 { BlockFields.SurfaceDescription.Alpha, 7 },
                 { BlockFields.SurfaceDescription.AlphaClipThreshold, 8 },
@@ -295,9 +306,15 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
 
             // PBRMasterNode adds/removes Metallic/Specular based on settings
             if (m_WorkflowMode == WorkflowMode.Specular)
+            {
                 blockMap.Add(BlockFields.SurfaceDescription.Specular, 3);
+                blockMap.Add(BlockFields.SurfaceDescription.Specular2, 12);
+            }
             else if (m_WorkflowMode == WorkflowMode.Metallic)
+            {
                 blockMap.Add(BlockFields.SurfaceDescription.Metallic, 2);
+                blockMap.Add(BlockFields.SurfaceDescription.Metallic2, 12);
+            }
 
             return true;
         }
@@ -746,11 +763,15 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 BlockFields.SurfaceDescription.BaseColor,
                 BlockFields.SurfaceDescription.NormalOS,
                 BlockFields.SurfaceDescription.NormalTS,
+                BlockFields.SurfaceDescription.NormalTS2,
                 BlockFields.SurfaceDescription.NormalWS,
                 BlockFields.SurfaceDescription.Emission,
                 BlockFields.SurfaceDescription.Metallic,
+                BlockFields.SurfaceDescription.Metallic2,
                 BlockFields.SurfaceDescription.Specular,
+                BlockFields.SurfaceDescription.Specular2,
                 BlockFields.SurfaceDescription.Smoothness,
+                BlockFields.SurfaceDescription.Smoothness2,
                 BlockFields.SurfaceDescription.Occlusion,
                 BlockFields.SurfaceDescription.Alpha,
                 BlockFields.SurfaceDescription.AlphaClipThreshold,
@@ -761,11 +782,15 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 BlockFields.SurfaceDescription.BaseColor,
                 BlockFields.SurfaceDescription.NormalOS,
                 BlockFields.SurfaceDescription.NormalTS,
+                BlockFields.SurfaceDescription.NormalTS2,
                 BlockFields.SurfaceDescription.NormalWS,
                 BlockFields.SurfaceDescription.Emission,
                 BlockFields.SurfaceDescription.Metallic,
+                BlockFields.SurfaceDescription.Metallic2,
                 BlockFields.SurfaceDescription.Specular,
+                BlockFields.SurfaceDescription.Specular2,
                 BlockFields.SurfaceDescription.Smoothness,
+                BlockFields.SurfaceDescription.Smoothness2,
                 BlockFields.SurfaceDescription.Occlusion,
                 BlockFields.SurfaceDescription.Alpha,
                 BlockFields.SurfaceDescription.AlphaClipThreshold,

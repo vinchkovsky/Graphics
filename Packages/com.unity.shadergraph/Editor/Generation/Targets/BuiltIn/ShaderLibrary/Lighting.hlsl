@@ -911,6 +911,7 @@ half4 BuiltInFragmentPBR(InputData inputData, SurfaceData surfaceData)
 #endif
 
     color += surfaceData.emission;
+    //color = half4(0, 0, 0, 0);
 
     return half4(color, surfaceData.alpha);
 }

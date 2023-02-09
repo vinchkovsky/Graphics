@@ -54,11 +54,17 @@ void InitializeSurfaceData(ParticleParams particleParams, out SurfaceData surfac
     #endif
 
     surfaceData.albedo = albedo.rgb;
-    surfaceData.specular = 0;
     surfaceData.normalTS = normalTS;
     surfaceData.emission = emission;
+
+    surfaceData.specular = 0;
     surfaceData.metallic = 0;
     surfaceData.smoothness = 1;
+
+    surfaceData.specular2 = 0;
+    surfaceData.metallic2 = 0;
+    surfaceData.smoothness2 = 1;
+
     surfaceData.occlusion = 1;
 
     surfaceData.alpha = albedo.a;

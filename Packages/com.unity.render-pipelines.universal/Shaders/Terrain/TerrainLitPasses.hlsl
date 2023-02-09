@@ -398,7 +398,7 @@ void SplatmapFragment(
 #ifdef TERRAIN_GBUFFER
 
     BRDFData brdfData;
-    InitializeBRDFData(albedo, metallic, /* specular */ half3(0.0h, 0.0h, 0.0h), smoothness, alpha, brdfData);
+    InitializeBRDFData(albedo, metallic, metallic, /* specular */ half3(0.0h, 0.0h, 0.0h), half3(0.0h, 0.0h, 0.0h), smoothness, smoothness, alpha, brdfData);
 
     // Baked lighting.
     half4 color;

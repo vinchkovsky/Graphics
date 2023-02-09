@@ -109,7 +109,7 @@ half4 SampleMetallicSpecGloss(float2 uv, half albedoAlpha)
     #endif
 #endif
 
-    return specGloss;
+        return half4(1, 1, 1, 1);// specGloss;
 }
 
 half SampleOcclusion(float2 uv)
@@ -216,8 +216,19 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
     outSurfaceData.specular = half3(0.0, 0.0, 0.0);
 #endif
 
+#if _SPECULAR_SETUP
+    outSurfaceData.metallic2 = half(1.0);
+    outSurfaceData.specular2 = specGloss.rgb;
+#else
+    outSurfaceData.metallic2 = specGloss.r;
+    outSurfaceData.specular2 = half3(0.0, 0.0, 0.0);
+#endif
+
     outSurfaceData.smoothness = specGloss.a;
+    outSurfaceData.smoothness2 = specGloss.a;
+
     outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
+    outSurfaceData.normalTS2 = outSurfaceData.normalTS;
     outSurfaceData.occlusion = SampleOcclusion(uv);
     outSurfaceData.emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
 
@@ -235,6 +246,7 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
     float2 detailUv = uv * _DetailAlbedoMap_ST.xy + _DetailAlbedoMap_ST.zw;
     outSurfaceData.albedo = ApplyDetailAlbedo(detailUv, outSurfaceData.albedo, detailMask);
     outSurfaceData.normalTS = ApplyDetailNormal(detailUv, outSurfaceData.normalTS, detailMask);
+    outSurfaceData.normalTS2 = outSurfaceData.normalTS;
 #endif
 }
 

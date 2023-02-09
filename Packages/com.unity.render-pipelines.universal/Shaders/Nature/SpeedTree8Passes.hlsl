@@ -450,7 +450,7 @@ half4 SpeedTree8Frag(SpeedTreeFragmentInput input) : SV_Target
     // in LitForwardPass GlobalIllumination (and temporarily LightingPhysicallyBased) are called inside UniversalFragmentPBR
     // in Deferred rendering we store the sum of these values (and of emission as well) in the GBuffer
     BRDFData brdfData;
-    InitializeBRDFData(albedo, metallic, specular, smoothness, alpha, brdfData);
+    InitializeBRDFData(albedo, metallic, metallic, specular, specular, smoothness, smoothness, alpha, brdfData);
 
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI, inputData.shadowMask);
     half3 color = GlobalIllumination(brdfData, inputData.bakedGI, occlusion, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS);
@@ -461,9 +461,15 @@ half4 SpeedTree8Frag(SpeedTreeFragmentInput input) : SV_Target
     SurfaceData surfaceData;
 
     surfaceData.albedo = albedo;
+
     surfaceData.specular = specular;
     surfaceData.metallic = metallic;
     surfaceData.smoothness = smoothness;
+
+    surfaceData.specular2 = specular;
+    surfaceData.metallic2 = metallic;
+    surfaceData.smoothness2 = smoothness;
+
     surfaceData.normalTS = normalTs;
     surfaceData.emission = emission;
     surfaceData.occlusion = occlusion;

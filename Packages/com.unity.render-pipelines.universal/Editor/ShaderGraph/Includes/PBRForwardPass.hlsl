@@ -97,33 +97,48 @@ void frag(
     InputData inputData;
     InitializeInputData(unpacked, surfaceDescription, inputData);
     // TODO: Mip debug modes would require this, open question how to do this on ShaderGraph.
-    //SETUP_DEBUG_TEXTURE_DATA(inputData, unpacked.texCoord1.xy, _MainTex);
+    //SETUP_DEBUG_TEXTURE_DATA(inputData, unpacked.texCoord1.xy, _MainTex);xxx
 
     #ifdef _SPECULAR_SETUP
         float3 specular = surfaceDescription.Specular;
         float metallic = 1;
+
+        float3 specular2 = surfaceDescription.Specular2;
+        float metallic2 = 1;
     #else
         float3 specular = 0;
         float metallic = surfaceDescription.Metallic;
+
+        float3 specular2 = 0;
+        float metallic2 = surfaceDescription.Metallic2;
     #endif
 
     half3 normalTS = half3(0, 0, 0);
+    half3 normalTS2 = half3(0, 0, 0);
     #if defined(_NORMALMAP) && defined(_NORMAL_DROPOFF_TS)
         normalTS = surfaceDescription.NormalTS;
+        normalTS2 = surfaceDescription.NormalTS2;
     #endif
 
     SurfaceData surface;
-    surface.albedo              = surfaceDescription.BaseColor;
-    surface.metallic            = saturate(metallic);
-    surface.specular            = specular;
-    surface.smoothness          = saturate(surfaceDescription.Smoothness),
+    surface.albedo = surfaceDescription.BaseColor;
+
+    surface.metallic = saturate(metallic);
+    surface.specular = specular;
+    surface.smoothness = saturate(surfaceDescription.Smoothness),
+
+    surface.metallic2 = saturate(metallic2);
+    surface.specular2 = specular2;
+    surface.smoothness2 = saturate(surfaceDescription.Smoothness2),
+
     surface.occlusion           = surfaceDescription.Occlusion,
     surface.emission            = surfaceDescription.Emission,
     surface.alpha               = saturate(alpha);
     surface.normalTS            = normalTS;
+    surface.normalTS2 = normalTS2;
     surface.clearCoatMask       = 0;
     surface.clearCoatSmoothness = 1;
-
+    //xx
     #ifdef _CLEARCOAT
         surface.clearCoatMask       = saturate(surfaceDescription.CoatMask);
         surface.clearCoatSmoothness = saturate(surfaceDescription.CoatSmoothness);

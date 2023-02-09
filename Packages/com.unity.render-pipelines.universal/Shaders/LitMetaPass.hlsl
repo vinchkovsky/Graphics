@@ -9,7 +9,7 @@ half4 UniversalFragmentMetaLit(Varyings input) : SV_Target
     InitializeStandardLitSurfaceData(input.uv, surfaceData);
 
     BRDFData brdfData;
-    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.specular, surfaceData.smoothness, surfaceData.alpha, brdfData);
+    InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.metallic2, surfaceData.specular, surfaceData.specular2, surfaceData.smoothness, surfaceData.smoothness2, surfaceData.alpha, brdfData);
 
     MetaInput metaInput;
     metaInput.Albedo = brdfData.diffuse + brdfData.specular * brdfData.roughness * 0.5;

@@ -246,6 +246,7 @@ half3 CalculateBlinnPhong(Light light, InputData inputData, SurfaceData surfaceD
 ////////////////////////////////////////////////////////////////////////////////
 half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
 {
+    //return half4(0, 0, 0, 0);
     #if defined(_SPECULARHIGHLIGHTS_OFF)
     bool specularHighlightsOff = true;
     #else
@@ -339,10 +340,17 @@ half4 UniversalFragmentPBR(InputData inputData, half3 albedo, half metallic, hal
     SurfaceData surfaceData;
 
     surfaceData.albedo = albedo;
+
     surfaceData.specular = specular;
     surfaceData.metallic = metallic;
     surfaceData.smoothness = smoothness;
+
+    surfaceData.specular2 = specular;
+    surfaceData.metallic2 = metallic;
+    surfaceData.smoothness2 = smoothness;
+
     surfaceData.normalTS = half3(0, 0, 1);
+    surfaceData.normalTS2 = half3(0, 0, 1);
     surfaceData.emission = emission;
     surfaceData.occlusion = occlusion;
     surfaceData.alpha = alpha;
@@ -427,13 +435,20 @@ half4 UniversalFragmentBlinnPhong(InputData inputData, half3 diffuse, half4 spec
     surfaceData.albedo = diffuse;
     surfaceData.alpha = alpha;
     surfaceData.emission = emission;
-    surfaceData.metallic = 0;
     surfaceData.occlusion = 1;
+
+    surfaceData.metallic = 0;
     surfaceData.smoothness = smoothness;
     surfaceData.specular = specularGloss.rgb;
+
+    surfaceData.metallic2 = 0;
+    surfaceData.smoothness2 = smoothness;
+    surfaceData.specular2 = specularGloss.rgb;
+
     surfaceData.clearCoatMask = 0;
     surfaceData.clearCoatSmoothness = 1;
     surfaceData.normalTS = normalTS;
+    surfaceData.normalTS2 = normalTS;
 
     return UniversalFragmentBlinnPhong(inputData, surfaceData);
 }
@@ -471,13 +486,20 @@ half4 UniversalFragmentBakedLit(InputData inputData, half3 color, half alpha, ha
     surfaceData.albedo = color;
     surfaceData.alpha = alpha;
     surfaceData.emission = half3(0, 0, 0);
-    surfaceData.metallic = 0;
     surfaceData.occlusion = 1;
+
+    surfaceData.metallic = 0;
     surfaceData.smoothness = 1;
     surfaceData.specular = half3(0, 0, 0);
+
+    surfaceData.metallic2 = 0;
+    surfaceData.smoothness2 = 1;
+    surfaceData.specular2 = half3(0, 0, 0);
+
     surfaceData.clearCoatMask = 0;
     surfaceData.clearCoatSmoothness = 1;
     surfaceData.normalTS = normalTS;
+    surfaceData.normalTS2 = normalTS;
 
     return UniversalFragmentBakedLit(inputData, surfaceData);
 }

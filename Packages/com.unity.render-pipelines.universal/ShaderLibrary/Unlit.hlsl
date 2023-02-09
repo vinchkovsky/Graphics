@@ -32,13 +32,20 @@ half4 UniversalFragmentUnlit(InputData inputData, half3 color, half alpha)
     surfaceData.albedo = color;
     surfaceData.alpha = alpha;
     surfaceData.emission = 0;
-    surfaceData.metallic = 0;
     surfaceData.occlusion = 1;
+
+    surfaceData.metallic = 0;
     surfaceData.smoothness = 1;
     surfaceData.specular = 0;
+
+    surfaceData.metallic2 = 0;
+    surfaceData.smoothness2 = 1;
+    surfaceData.specular2 = 0;
+
     surfaceData.clearCoatMask = 0;
     surfaceData.clearCoatSmoothness = 1;
     surfaceData.normalTS = half3(0, 0, 1);
+    surfaceData.normalTS2 = half3(0, 0, 1);
 
     return UniversalFragmentUnlit(inputData, surfaceData);
 }

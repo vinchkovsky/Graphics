@@ -110,11 +110,17 @@ inline void InitializeParticleLitSurfaceData(float2 uv, float3 blendUv, float4 p
 
     outSurfaceData = (SurfaceData)0;
     outSurfaceData.albedo = albedo.rgb;
+
     outSurfaceData.specular = half3(0.0h, 0.0h, 0.0h);
-    outSurfaceData.normalTS = normalTS;
-    outSurfaceData.emission = emission;
     outSurfaceData.metallic = metallicGloss.r;
     outSurfaceData.smoothness = metallicGloss.g;
+
+    outSurfaceData.specular2 = half3(0.0h, 0.0h, 0.0h);
+    outSurfaceData.metallic2 = metallicGloss.r;
+    outSurfaceData.smoothness2 = metallicGloss.g;
+
+    outSurfaceData.normalTS = normalTS;
+    outSurfaceData.emission = emission;
     outSurfaceData.occlusion = 1.0;
 
     outSurfaceData.albedo = AlphaModulate(outSurfaceData.albedo, albedo.a); // Premultiply in UniversalPBR, BRDF init.
@@ -148,11 +154,17 @@ inline void InitializeParticleLitSurfaceData(ParticleParams params, out SurfaceD
 
     outSurfaceData = (SurfaceData)0;
     outSurfaceData.albedo = albedo.rgb;
+
     outSurfaceData.specular = half3(0.0h, 0.0h, 0.0h);
-    outSurfaceData.normalTS = normalTS;
-    outSurfaceData.emission = emission;
     outSurfaceData.metallic = metallicGloss.r;
     outSurfaceData.smoothness = metallicGloss.g;
+
+    outSurfaceData.specular2 = half3(0.0h, 0.0h, 0.0h);
+    outSurfaceData.metallic2 = metallicGloss.r;
+    outSurfaceData.smoothness2 = metallicGloss.g;
+
+    outSurfaceData.normalTS = normalTS;
+    outSurfaceData.emission = emission;
     outSurfaceData.occlusion = 1.0;
 
     outSurfaceData.albedo = AlphaModulate(outSurfaceData.albedo, albedo.a);

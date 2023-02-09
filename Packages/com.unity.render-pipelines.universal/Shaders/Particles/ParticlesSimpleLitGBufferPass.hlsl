@@ -63,14 +63,19 @@ inline void InitializeParticleSimpleLitSurfaceData(VaryingsParticle input, out S
     outSurfaceData.emission = half3(0, 0, 0);
 #endif
     half4 specularGloss = SampleSpecularSmoothness(particleParams.uv, particleParams.blendUv, albedo.a, _SpecColor, TEXTURE2D_ARGS(_SpecGlossMap, sampler_SpecGlossMap));
+
     outSurfaceData.specular = specularGloss.rgb;
     outSurfaceData.smoothness = specularGloss.a;
+
+    outSurfaceData.specular2 = specularGloss.rgb;
+    outSurfaceData.smoothness2 = specularGloss.a;
 
 #if defined(_DISTORTION_ON)
     outSurfaceData.albedo = Distortion(half4(outSurfaceData.albedo, outSurfaceData.alpha), outSurfaceData.normalTS, _DistortionStrengthScaled, _DistortionBlend, projectedPosition);
 #endif
 
     outSurfaceData.metallic = 0.0; // unused
+    outSurfaceData.metallic2 = 0.0; // unused
     outSurfaceData.occlusion = 1.0;
 }
 

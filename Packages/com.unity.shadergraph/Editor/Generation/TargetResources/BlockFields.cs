@@ -25,6 +25,8 @@ namespace UnityEditor.ShaderGraph
                 new ColorControl(UnityEngine.Color.grey, false), ShaderStage.Fragment);
             public static BlockFieldDescriptor NormalTS = new BlockFieldDescriptor(SurfaceDescription.name, "NormalTS", "Normal (Tangent Space)", "SURFACEDESCRIPTION_NORMALTS",
                 new NormalControl(CoordinateSpace.Tangent), ShaderStage.Fragment);
+            public static BlockFieldDescriptor NormalTS2 = new BlockFieldDescriptor(SurfaceDescription.name, "NormalTS2", "Normal2 (Tangent Space)", "SURFACEDESCRIPTION_NORMALTS2",
+                new NormalControl(CoordinateSpace.Tangent), ShaderStage.Fragment);
             public static BlockFieldDescriptor NormalOS = new BlockFieldDescriptor(SurfaceDescription.name, "NormalOS", "Normal (Object Space)", "SURFACEDESCRIPTION_NORMALOS",
                 new NormalControl(CoordinateSpace.Object), ShaderStage.Fragment);
             public static BlockFieldDescriptor NormalWS = new BlockFieldDescriptor(SurfaceDescription.name, "NormalWS", "Normal (World Space)", "SURFACEDESCRIPTION_NORMALWS",
@@ -34,6 +36,12 @@ namespace UnityEditor.ShaderGraph
             public static BlockFieldDescriptor Specular = new BlockFieldDescriptor(SurfaceDescription.name, "Specular", "Specular Color", "SURFACEDESCRIPTION_SPECULAR",
                 new ColorControl(UnityEngine.Color.grey, false), ShaderStage.Fragment);
             public static BlockFieldDescriptor Smoothness = new BlockFieldDescriptor(SurfaceDescription.name, "Smoothness", "SURFACEDESCRIPTION_SMOOTHNESS",
+                new FloatControl(0.5f), ShaderStage.Fragment);
+            public static BlockFieldDescriptor Metallic2 = new BlockFieldDescriptor(SurfaceDescription.name, "Metallic2", "SURFACEDESCRIPTION_METALLIC2",
+                new FloatControl(0.0f), ShaderStage.Fragment);
+            public static BlockFieldDescriptor Specular2 = new BlockFieldDescriptor(SurfaceDescription.name, "Specular2", "Specular Color2", "SURFACEDESCRIPTION_SPECULAR2",
+                new ColorControl(UnityEngine.Color.grey, false), ShaderStage.Fragment);
+            public static BlockFieldDescriptor Smoothness2 = new BlockFieldDescriptor(SurfaceDescription.name, "Smoothness2", "SURFACEDESCRIPTION_SMOOTHNESS2",
                 new FloatControl(0.5f), ShaderStage.Fragment);
             public static BlockFieldDescriptor Occlusion = new BlockFieldDescriptor(SurfaceDescription.name, "Occlusion", "Ambient Occlusion", "SURFACEDESCRIPTION_OCCLUSION",
                 new FloatControl(1.0f), ShaderStage.Fragment);
