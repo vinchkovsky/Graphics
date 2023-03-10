@@ -1358,6 +1358,8 @@ namespace UnityEngine.Rendering.Universal
 
                 if (m_CameraDepthAttachment == null || m_CameraDepthAttachment.nameID != BuiltinRenderTextureType.CameraTarget)
                 {
+                    //Debug.Log("1: " + m_CameraDepthAttachment.nameID);
+                    //Debug.Log("2: " + BuiltinRenderTextureType.CameraTarget);
                     var depthDescriptor = descriptor;
                     depthDescriptor.useMipMap = false;
                     depthDescriptor.autoGenerateMips = false;

@@ -445,6 +445,11 @@ namespace UnityEngine.Rendering
             // Behavior should be fine even if camera is null
             if (!onlyGlobal)
                 trigger.TryGetComponent<Camera>(out camera);
+            if (camera)
+            {
+                //if (camera.name != "Main Camera")
+                //    return;
+            }
 
             // Traverse all volumes
             foreach (var volume in volumes)

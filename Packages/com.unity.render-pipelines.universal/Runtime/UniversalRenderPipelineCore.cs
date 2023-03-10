@@ -1518,13 +1518,15 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="lightAttenuation">The attenuation of the light.</param>
         /// <param name="lightSpotDir">The direction of the light.</param>
         /// <param name="lightOcclusionProbeChannel">The occlusion probe channel for the light.</param>
-        public static void InitializeLightConstants_Common(NativeArray<VisibleLight> lights, int lightIndex, out Vector4 lightPos, out Vector4 lightColor, out Vector4 lightAttenuation, out Vector4 lightSpotDir, out Vector4 lightOcclusionProbeChannel)
+        public static void InitializeLightConstants_Common(NativeArray<VisibleLight> lights, int lightIndex, out Vector4 lightPos, out Vector4 lightColor, out Vector4 lightAttenuation, out Vector4 lightSpotDir, out Vector4 lightOcclusionProbeChannel,
+            out Vector4 additionalLightsCustomData1)
         {
             lightPos = k_DefaultLightPosition;
             lightColor = k_DefaultLightColor;
             lightOcclusionProbeChannel = k_DefaultLightsProbeChannel;
             lightAttenuation = k_DefaultLightAttenuation;  // Directional by default.
             lightSpotDir = k_DefaultLightSpotDirection;
+            additionalLightsCustomData1 = k_DefaultLightAttenuation;
 
             // When no lights are visible, main light will be set to -1.
             // In this case we initialize it to default values and return
@@ -1534,6 +1536,7 @@ namespace UnityEngine.Rendering.Universal
             // Avoid memcpys. Pass by ref and locals for multiple uses.
             ref VisibleLight lightData = ref lights.UnsafeElementAtMutable(lightIndex);
             var light = lightData.light;
+            AdditionalLightData burnData = light.GetComponent<AdditionalLightData>();
             var lightLocalToWorld = lightData.localToWorldMatrix;
             var lightType = lightData.lightType;
 
@@ -1548,6 +1551,10 @@ namespace UnityEngine.Rendering.Universal
                 lightPos = new Vector4(pos.x, pos.y, pos.z, 1.0f);
 
                 GetPunctualLightDistanceAttenuation(lightData.range, ref lightAttenuation);
+                if (burnData == null)
+                    additionalLightsCustomData1 = lightAttenuation;
+                else
+                    GetPunctualLightDistanceAttenuation(burnData.BacklightRange, ref additionalLightsCustomData1);
 
                 if (lightType == LightType.Spot)
                 {
