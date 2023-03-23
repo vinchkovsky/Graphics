@@ -12,6 +12,9 @@ PackedVaryings vert(Attributes input)
 
 half4 frag(PackedVaryings packedInput) : SV_TARGET
 {
+    //clip(-1);
+
+    //return 1;
     Varyings unpacked = UnpackVaryings(packedInput);
     UNITY_SETUP_INSTANCE_ID(unpacked);
     SurfaceDescription surfaceDescription = BuildSurfaceDescription(unpacked);

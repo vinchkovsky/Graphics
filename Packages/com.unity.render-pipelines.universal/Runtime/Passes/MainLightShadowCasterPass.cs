@@ -31,6 +31,7 @@ namespace UnityEngine.Rendering.Universal.Internal
 
         int m_MainLightShadowmapID;
         internal RTHandle m_MainLightShadowmapTexture;
+        public static RTHandle LastMainLightShadowmapTexture;
         internal RTHandle m_EmptyLightShadowmapTexture;
 
         Matrix4x4[] m_MainLightShadowMatrices;
@@ -179,6 +180,9 @@ namespace UnityEngine.Rendering.Universal.Internal
 
             RenderMainLightCascadeShadowmap(ref context, ref renderingData);
             renderingData.commandBuffer.SetGlobalTexture(m_MainLightShadowmapID, m_MainLightShadowmapTexture.nameID);
+            //renderingData.commandBuffer.SetGlobalTexture("_BurnMainLightShadowmapTexture", m_MainLightShadowmapTexture.nameID);
+
+            LastMainLightShadowmapTexture = m_MainLightShadowmapTexture;
         }
 
         void Clear()

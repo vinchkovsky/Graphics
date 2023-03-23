@@ -127,6 +127,7 @@ Varyings BuildVaryings(Attributes input)
     #else
         output.positionCS.z = max(output.positionCS.z, UNITY_NEAR_CLIP_VALUE);
     #endif
+        //output.positionCS.z = output.positionCS.z * 0.5;
 #elif (SHADERPASS == SHADERPASS_META)
     output.positionCS = UnityMetaVertexPosition(input.positionOS, input.uv1, input.uv2, unity_LightmapST, unity_DynamicLightmapST);
 #else

@@ -59,6 +59,7 @@ namespace UnityEngine.Rendering.Universal.Internal
 
         const int k_ShadowmapBufferBits = 16;
         private int m_AdditionalLightsShadowmapID;
+        public static RTHandle LastAdditionalLightsShadowmapHandle;
         internal RTHandle m_AdditionalLightsShadowmapHandle;
 
 
@@ -848,6 +849,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             {
                 SetEmptyAdditionalShadowmapAtlas(ref context, ref renderingData);
                 renderingData.commandBuffer.SetGlobalTexture(m_AdditionalLightsShadowmapID, m_AdditionalLightsShadowmapHandle.nameID);
+                LastAdditionalLightsShadowmapHandle = m_AdditionalLightsShadowmapHandle;
 
                 return;
             }
@@ -856,6 +858,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             {
                 RenderAdditionalShadowmapAtlas(ref context, ref renderingData);
                 renderingData.commandBuffer.SetGlobalTexture(m_AdditionalLightsShadowmapID, m_AdditionalLightsShadowmapHandle.nameID);
+                LastAdditionalLightsShadowmapHandle = m_AdditionalLightsShadowmapHandle;
             }
         }
 
